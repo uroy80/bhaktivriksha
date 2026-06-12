@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+/* Sadhana Companion — devotional palette: saffron, maroon, warm cream */
+@theme {
+  --color-saffron-50: #fff8ed;
+  --color-saffron-100: #ffefd4;
+  --color-saffron-200: #ffdba8;
+  --color-saffron-300: #ffc070;
+  --color-saffron-400: #ff9b37;
+  --color-saffron-500: #ff7d10;
+  --color-saffron-600: #f06206;
+  --color-saffron-700: #c74908;
+  --color-saffron-800: #9e3a0f;
+  --color-saffron-900: #7f3210;
+  --color-saffron-950: #451606;
+
+  --color-maroon-50: #fdf3f3;
+  --color-maroon-100: #fbe5e5;
+  --color-maroon-200: #f8d0d0;
+  --color-maroon-300: #f2afaf;
+  --color-maroon-400: #e98080;
+  --color-maroon-500: #db5757;
+  --color-maroon-600: #c63a3a;
+  --color-maroon-700: #a62e2e;
+  --color-maroon-800: #8a2a2a;
+  --color-maroon-900: #5e2020;
+  --color-maroon-950: #3e0f0f;
+
+  --color-cream: #fdf9f0;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: #2d1f14;
+  font-family: var(--font-sans);
+}
+
+/* Print styles for downloadable register views */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+}

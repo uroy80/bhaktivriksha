@@ -1,0 +1,247 @@
+// Sadhana Companion + DRM — core data model
+// Hierarchy ("milkyway"): ADMIN → MISSIONARY → (MISSIONARY | DEVOTEE) via User.mentorId self-relation.
+// A user's superiors are the mentor chain; access control walks this tree.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MISSIONARY
+  DEVOTEE
+}
+
+enum UserStatus {
+  PENDING // applied via the application area, awaiting review
+  ACTIVE
+  INACTIVE
+}
+
+enum ApplicationType {
+  JOIN // new devotee applying to the temple community
+  LEVEL_CHANGE // existing devotee applying to advance to a sadhana level
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum SessionType {
+  SATSANGA
+  CLASS
+  OTHER
+}
+
+enum FollowUpChannel {
+  PHONE_CALL
+  WHATSAPP
+  EMAIL
+  SMS
+  HOME_VISIT
+  IN_PERSON
+  OTHER
+}
+
+enum ReportPeriod {
+  DAILY
+  WEEKLY
+}
+
+model User {
+  id           String     @id @default(cuid())
+  name         String
+  email        String     @unique
+  phone        String?
+  whatsapp     String?
+  address      String?
+  passwordHash String
+  role         Role       @default(DEVOTEE)
+  status       UserStatus @default(PENDING)
+
+  // The milkyway tree: who this person reports to / is cared for by.
+  mentorId String?
+  mentor   User?   @relation("Mentorship", fields: [mentorId], references: [id], onDelete: SetNull)
+  mentees  User[]  @relation("Mentorship")
+
+  // Current sadhana level tag (assigned by admin/missionary)
+  sadhanaLevelId String?
+  sadhanaLevel   SadhanaLevel? @relation(fields: [sadhanaLevelId], references: [id], onDelete: SetNull)
+  levelTaggedAt  DateTime?
+
+  joinedAt  DateTime? // when the application was approved
+  notes     String? // private notes visible to superiors only
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  applications         Application[]    @relation("Applicant")
+  reviewedApplications Application[]    @relation("Reviewer")
+  sessionsConducted    ClassSession[]
+  attendances          Attendance[]     @relation("AttendeeRecords")
+  markedAttendances    Attendance[]     @relation("Marker")
+  followUpsReceived    FollowUp[]       @relation("FollowUpDevotee")
+  followUpsMade        FollowUp[]       @relation("FollowUpBy")
+  progressReports      ProgressReport[]
+  levelHistory         LevelHistory[]   @relation("LevelHistoryUser")
+  levelsAssigned       LevelHistory[]   @relation("LevelHistoryAssigner")
+  sadhanaEntries       SadhanaEntry[]
+
+  @@index([mentorId])
+  @@index([role, status])
+}
+
+// Sadhana levels (Sraddhavan, ... ) seeded from bhaktisteps.com.
+// sections holds the page content: [{ title: "Standards", items: [...] }, { title: "Recommended", items: [...] }, ...]
+model SadhanaLevel {
+  id        String  @id @default(cuid())
+  slug      String  @unique
+  name      String
+  order     Int     @unique
+  summary   String?
+  sections  Json    @default("[]")
+  sourceUrl String?
+
+  users        User[]
+  applications Application[]
+  history      LevelHistory[]
+}
+
+// Audit trail of level tags — who moved whom to which level, when.
+model LevelHistory {
+  id           String       @id @default(cuid())
+  userId       String
+  user         User         @relation("LevelHistoryUser", fields: [userId], references: [id], onDelete: Cascade)
+  levelId      String
+  level        SadhanaLevel @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  assignedById String?
+  assignedBy   User?        @relation("LevelHistoryAssigner", fields: [assignedById], references: [id], onDelete: SetNull)
+  note         String?
+  assignedAt   DateTime     @default(now())
+
+  @@index([userId])
+}
+
+// Application area: JOIN (new devotee) or LEVEL_CHANGE (advance to next level).
+model Application {
+  id           String            @id @default(cuid())
+  type         ApplicationType
+  applicantId  String
+  applicant    User              @relation("Applicant", fields: [applicantId], references: [id], onDelete: Cascade)
+  levelId      String? // requested level for LEVEL_CHANGE
+  level        SadhanaLevel?     @relation(fields: [levelId], references: [id], onDelete: SetNull)
+  message      String? // applicant's statement
+  status       ApplicationStatus @default(PENDING)
+  reviewedById String?
+  reviewedBy   User?             @relation("Reviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  reviewNote   String?
+  reviewedAt   DateTime?
+  createdAt    DateTime          @default(now())
+
+  @@index([status])
+  @@index([applicantId])
+}
+
+// A satsanga / class conducted by a missionary (or admin).
+model ClassSession {
+  id            String      @id @default(cuid())
+  title         String
+  type          SessionType @default(SATSANGA)
+  date          DateTime
+  location      String?
+  conductedById String
+  conductedBy   User        @relation(fields: [conductedById], references: [id], onDelete: Cascade)
+  notes         String?
+  createdAt     DateTime    @default(now())
+
+  attendances Attendance[]
+  followUps   FollowUp[]
+
+  @@index([conductedById, date])
+}
+
+// One row per devotee per session — the digital version of the weekly register
+// (A = present, sikshaLevel = the "S" column snapshot at marking time).
+model Attendance {
+  id          String       @id @default(cuid())
+  sessionId   String
+  session     ClassSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  devoteeId   String
+  devotee     User         @relation("AttendeeRecords", fields: [devoteeId], references: [id], onDelete: Cascade)
+  present     Boolean      @default(false)
+  sikshaLevel String?
+  remarks     String?
+  markedById  String?
+  markedBy    User?        @relation("Marker", fields: [markedById], references: [id], onDelete: SetNull)
+  markedAt    DateTime     @default(now())
+
+  @@unique([sessionId, devoteeId])
+  @@index([devoteeId])
+}
+
+// Post-class outreach: every call / WhatsApp / email / visit to a devotee is logged here.
+model FollowUp {
+  id         String          @id @default(cuid())
+  devoteeId  String
+  devotee    User            @relation("FollowUpDevotee", fields: [devoteeId], references: [id], onDelete: Cascade)
+  sessionId  String? // optionally linked to the session that was missed
+  session    ClassSession?   @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  channel    FollowUpChannel
+  outcome    String?
+  notes      String?
+  byId       String
+  by         User            @relation("FollowUpBy", fields: [byId], references: [id], onDelete: Cascade)
+  occurredAt DateTime        @default(now())
+  createdAt  DateTime        @default(now())
+
+  @@index([devoteeId])
+  @@index([byId, occurredAt])
+}
+
+// Sadhana Companion: one journal row per devotee per day (date-keyed upsert).
+// Mentors see their mentees' consistency from these entries.
+model SadhanaEntry {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date           DateTime @db.Date
+  japaRounds     Int      @default(0)
+  readingMinutes Int      @default(0)
+  mangalArati    Boolean  @default(false)
+  eveningArati   Boolean  @default(false)
+  lectureHeard   Boolean  @default(false)
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+// Missionary's daily/weekly update to their superior, with the EFFORTS counters
+// from the Bhakti Vriksha weekly report format (prefilled from FollowUp logs, editable).
+model ProgressReport {
+  id          String       @id @default(cuid())
+  authorId    String
+  author      User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  period      ReportPeriod
+  periodStart DateTime
+  periodEnd   DateTime
+  summary     String
+
+  mails         Int @default(0)
+  calls         Int @default(0)
+  homeVisits    Int @default(0)
+  serviceDonors Int @default(0)
+  moneyDonors   Int @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([authorId, periodStart])
+}

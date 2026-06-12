@@ -1,0 +1,21 @@
+# Local development database. Host port 5433 (5432 is taken on this machine).
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: sadhana-companion-db
+    environment:
+      POSTGRES_USER: sadhana
+      POSTGRES_PASSWORD: sadhana_dev_password
+      POSTGRES_DB: sadhana_companion
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - sadhana_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sadhana"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  sadhana_pg_data:
