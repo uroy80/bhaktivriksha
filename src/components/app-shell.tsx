@@ -3,6 +3,14 @@ import type { Role, User } from "@prisma/client";
 import { signOut } from "@/auth";
 import { Icon, type IconName } from "@/components/icons";
 import { LotusLogo } from "@/components/lotus";
+import { LotusFeet } from "@/components/devotional";
+
+/** Render a nav item's icon — the lotus-feet emblem for levels, lucide otherwise. */
+function NavIcon({ name, className }: { name: IconName; className: string }) {
+  if (name === "levels") return <LotusFeet className={className} />;
+  const Cmp = Icon[name];
+  return <Cmp className={className} strokeWidth={2} />;
+}
 
 type NavItem = { href: string; label: string; icon: IconName };
 
@@ -70,14 +78,13 @@ export function AppShell({ user, children }: { user: User; children: React.React
         <nav className="no-print hidden w-52 shrink-0 md:block">
           <ul className="space-y-1">
             {items.map((item) => {
-              const IconCmp = Icon[item.icon];
               return (
                 <li key={item.href}>
                   <Link
                     href={item.href}
                     className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-saffron-900 transition-colors hover:bg-saffron-100"
                   >
-                    <IconCmp className="h-[18px] w-[18px] text-saffron-600" strokeWidth={2} />
+                    <NavIcon name={item.icon} className="h-[18px] w-[18px] text-saffron-600" />
                     {item.label}
                   </Link>
                 </li>
@@ -93,14 +100,13 @@ export function AppShell({ user, children }: { user: User; children: React.React
       <nav className="no-print fixed inset-x-0 bottom-0 z-40 border-t border-saffron-900/10 bg-white/95 backdrop-blur-md">
         <ul className="flex justify-around">
           {items.slice(0, 5).map((item) => {
-            const IconCmp = Icon[item.icon];
             return (
               <li key={item.href}>
                 <Link
                   href={item.href}
                   className="flex flex-col items-center gap-1 px-3 py-2.5 text-[11px] font-medium text-saffron-900"
                 >
-                  <IconCmp className="h-5 w-5 text-saffron-600" strokeWidth={2} />
+                  <NavIcon name={item.icon} className="h-5 w-5 text-saffron-600" />
                   {item.label}
                 </Link>
               </li>

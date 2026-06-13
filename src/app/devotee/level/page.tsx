@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { cn, formatDate } from "@/lib/utils";
 import { Badge, ButtonLink, Card, PageHeader } from "@/components/ui";
 import { Icon, type IconName } from "@/components/icons";
+import { LotusFeet } from "@/components/devotional";
 
 type LevelSection = { title: string; items: string[] };
 
@@ -76,9 +77,7 @@ export default async function MyLevelPage() {
           <Card className="bg-gradient-to-br from-saffron-50 to-white p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="flex items-start gap-4">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-sm">
-                  <Icon.levels className="h-7 w-7" />
-                </span>
+                <LotusFeet className="h-14 w-14 shrink-0 drop-shadow-sm" />
                 <div>
                   <Badge>Level {level.order} of 5</Badge>
                   <h2 className="mt-2 text-3xl font-bold text-saffron-950">{level.name}</h2>

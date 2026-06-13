@@ -33,6 +33,19 @@ export function PrabhupadaPortrait({ className }: { className?: string }) {
   );
 }
 
+/** Krishna's lotus feet (Charanaravinda) — circular emblem for the path/levels. */
+export function LotusFeet({ className }: { className?: string }) {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/devotional/lotus-feet.png"
+      alt="Krishna's lotus feet"
+      className={cn("select-none rounded-full object-contain", className)}
+      draggable={false}
+    />
+  );
+}
+
 export function PrabhupadaPhoto({ className }: { className?: string }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element

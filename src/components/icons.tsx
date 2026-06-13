@@ -9,7 +9,7 @@ import {
   Inbox,
   CalendarDays,
   BarChart3,
-  Footprints,
+  Milestone,
   ListChecks,
   Sparkles,
   Flame,
@@ -50,7 +50,7 @@ export const Icon = {
   applications: Inbox,
   sessions: CalendarDays,
   reports: BarChart3,
-  levels: Footprints,
+  levels: Milestone, // path/levels marker (the lotus-feet emblem is used in prominent spots)
   attendance: ListChecks,
   sadhana: Sparkles,
   followups: Phone,

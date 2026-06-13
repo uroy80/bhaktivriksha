@@ -3,6 +3,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { Card } from "@/components/ui";
 import { Icon } from "@/components/icons";
+import { LotusFeet } from "@/components/devotional";
 import { PublicTopBar } from "@/components/public-top-bar";
 import { parseSections, groupSections } from "@/lib/levels";
 
@@ -28,14 +29,17 @@ export default async function LevelsPage() {
       <PublicTopBar />
 
       <main className="mx-auto max-w-5xl px-4 py-12">
-        <div className="max-w-2xl">
-          <h1 className="text-3xl font-bold text-saffron-950 sm:text-4xl">The Sadhana Ladder</h1>
-          <p className="mt-3 text-saffron-900/75">
+        <div className="flex items-start gap-4">
+          <LotusFeet className="hidden h-20 w-20 shrink-0 drop-shadow-sm sm:block" />
+          <div className="max-w-2xl">
+            <h1 className="text-3xl font-bold text-saffron-950 sm:text-4xl">The Sadhana Ladder</h1>
+            <p className="mt-3 text-saffron-900/75">
             Five levels of steady spiritual progress, from first faith to full shelter. Tap any
             level to see its <span className="font-semibold">standards</span> (the do&apos;s to live
             by) and its <span className="font-semibold">recommended</span> songs, practices and
             books.
-          </p>
+            </p>
+          </div>
         </div>
 
         {levels.length === 0 ? (

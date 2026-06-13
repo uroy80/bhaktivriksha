@@ -4,7 +4,7 @@ import { homeFor } from "@/lib/guards";
 import { ButtonLink } from "@/components/ui";
 import { Icon } from "@/components/icons";
 import { LotusLogo, LotusFlower } from "@/components/lotus";
-import { KrishnaImage, PrabhupadaPortrait } from "@/components/devotional";
+import { KrishnaImage, PrabhupadaPortrait, LotusFeet } from "@/components/devotional";
 
 // Public landing page — the front door of Sadhana Companion.
 // No auth required; signed-in users get a shortcut to their dashboard.
@@ -74,7 +74,7 @@ export default async function LandingPage() {
                   </>
                 )}
                 <ButtonLink href="/levels" variant="ghost" className="px-4 py-3 text-base">
-                  <Icon.levels className="h-5 w-5" />
+                  <LotusFeet className="h-7 w-7" />
                   Explore the path
                   <Icon.chevron className="h-4 w-4" />
                 </ButtonLink>
