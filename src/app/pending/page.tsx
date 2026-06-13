@@ -5,7 +5,8 @@ import { signOut } from "@/auth";
 import { prisma } from "@/lib/db";
 import { homeFor, requireUser } from "@/lib/guards";
 import { Badge, Button, Card } from "@/components/ui";
-import { Icon, LotusMark } from "@/components/icons";
+import { Icon } from "@/components/icons";
+import { LotusLogo } from "@/components/lotus";
 import { formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Application under review" };
@@ -25,9 +26,7 @@ export default async function PendingPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-saffron-100 to-cream px-4 py-10">
       <Link href="/" className="mb-6 flex items-center gap-2">
-        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-md">
-          <LotusMark className="h-6 w-6" />
-        </span>
+        <LotusLogo className="h-12 w-12" />
         <span className="text-xl font-bold text-saffron-900">Sadhana Companion</span>
       </Link>
 

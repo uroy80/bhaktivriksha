@@ -3,7 +3,8 @@ import { requireRole } from "@/lib/guards";
 import { prisma } from "@/lib/db";
 import { cn, formatDate, toDateKey } from "@/lib/utils";
 import { Badge, ButtonLink, Card } from "@/components/ui";
-import { Icon, LotusMark } from "@/components/icons";
+import { Icon } from "@/components/icons";
+import { LotusLogo } from "@/components/lotus";
 
 export default async function DevoteeHomePage() {
   const user = await requireRole("DEVOTEE", "MISSIONARY", "ADMIN");
@@ -44,9 +45,7 @@ export default async function DevoteeHomePage() {
     <div>
       {/* Warm greeting */}
       <div className="mb-6 flex items-center gap-3">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-sm">
-          <LotusMark className="h-6 w-6" />
-        </span>
+        <LotusLogo className="h-12 w-12 shrink-0" />
         <div>
           <h1 className="text-2xl font-bold text-saffron-950 sm:text-3xl">
             Hare Krishna, {firstName}

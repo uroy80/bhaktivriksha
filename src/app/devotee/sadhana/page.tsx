@@ -2,7 +2,8 @@ import { requireRole } from "@/lib/guards";
 import { prisma } from "@/lib/db";
 import { cn, formatDate, toDateKey, weekBounds } from "@/lib/utils";
 import { Badge, Card, EmptyState, PageHeader, StatCard, Table, Td, Th } from "@/components/ui";
-import { Icon, LotusMark } from "@/components/icons";
+import { Icon } from "@/components/icons";
+import { LotusLogo } from "@/components/lotus";
 import { SadhanaForm } from "./sadhana-form";
 import {
   computeStreaks,
@@ -70,11 +71,7 @@ export default async function SadhanaJournalPage(props: {
             ? `Logging for today, ${formatDate(dateKey)}`
             : `Logging for ${formatDate(dateKey)}`
         }
-        actions={
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-sm">
-            <LotusMark className="h-6 w-6" />
-          </span>
-        }
+        actions={<LotusLogo className="h-11 w-11" />}
       />
 
       <div className="grid gap-6 lg:grid-cols-5">

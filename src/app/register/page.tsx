@@ -7,7 +7,8 @@ import { homeFor } from "@/lib/guards";
 import { getInviteHost } from "@/lib/invite";
 import { prisma } from "@/lib/db";
 import { Card } from "@/components/ui";
-import { Icon, LotusMark } from "@/components/icons";
+import { Icon } from "@/components/icons";
+import { LotusLogo } from "@/components/lotus";
 import { RegisterForm } from "./register-form";
 
 export const metadata: Metadata = { title: "Create your account" };
@@ -40,9 +41,7 @@ export default async function RegisterPage(props: {
       <div className="mx-auto max-w-5xl px-4 py-10">
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-md">
-              <LotusMark className="h-6 w-6" />
-            </span>
+            <LotusLogo className="h-12 w-12" />
             <span className="text-xl font-bold text-saffron-900">Sadhana Companion</span>
           </Link>
           <h1 className="mt-5 text-2xl font-bold text-saffron-950 sm:text-3xl">

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { prisma } from "@/lib/db";
 import { ButtonLink, Card } from "@/components/ui";
-import { LotusMark } from "@/components/icons";
+import { LotusLogo } from "@/components/lotus";
 import { Lock } from "lucide-react";
 import { SetupForm } from "./setup-form";
 
@@ -16,9 +16,7 @@ export default async function SetupPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-saffron-100 to-cream px-4 py-10">
       <Link href="/" className="mb-6 flex items-center gap-2">
-        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-md">
-          <LotusMark className="h-6 w-6" />
-        </span>
+        <LotusLogo className="h-12 w-12" />
         <span className="text-xl font-bold text-saffron-900">Sadhana Companion</span>
       </Link>
 

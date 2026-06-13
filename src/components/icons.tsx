@@ -103,7 +103,5 @@ export const channelMeta: Record<string, { icon: LucideIcon; label: string }> = 
   OTHER: { icon: MessageCircle, label: "Other" },
 };
 
-/** A small inline lotus mark for branding (saffron). */
-export function LotusMark({ className }: { className?: string }) {
-  return <Flower2 className={className} strokeWidth={1.75} aria-hidden />;
-}
+// The lotus brand mark/illustration now live in src/components/lotus.tsx
+// (real artwork). Icon.lotus (Flower2) remains for generic inline glyph use.

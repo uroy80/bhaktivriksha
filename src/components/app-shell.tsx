@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Role, User } from "@prisma/client";
 import { signOut } from "@/auth";
-import { Icon, LotusMark, type IconName } from "@/components/icons";
+import { Icon, type IconName } from "@/components/icons";
+import { LotusLogo } from "@/components/lotus";
 
 type NavItem = { href: string; label: string; icon: IconName };
 
@@ -42,9 +43,7 @@ export function AppShell({ user, children }: { user: User; children: React.React
       <header className="no-print sticky top-0 z-40 border-b border-saffron-900/10 bg-white/85 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
           <Link href={items[0].href} className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-sm">
-              <LotusMark className="h-5 w-5" />
-            </span>
+            <LotusLogo className="h-9 w-9" />
             <span className="font-bold text-saffron-900">Sadhana Companion</span>
           </Link>
           <div className="flex items-center gap-3">

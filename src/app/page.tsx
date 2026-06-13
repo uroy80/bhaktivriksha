@@ -3,7 +3,8 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { homeFor } from "@/lib/guards";
 import { ButtonLink, Card } from "@/components/ui";
-import { Icon, LotusMark, type IconName } from "@/components/icons";
+import { Icon, type IconName } from "@/components/icons";
+import { LotusLogo, LotusHero } from "@/components/lotus";
 
 // Public landing page — the front door of Sadhana Companion.
 // No auth required; signed-in users get a shortcut to their dashboard.
@@ -53,9 +54,7 @@ export default async function LandingPage() {
       <header className="border-b border-saffron-900/10 bg-white/80 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-sm">
-              <LotusMark className="h-5 w-5" />
-            </span>
+            <LotusLogo className="h-9 w-9" />
             <span className="font-bold text-saffron-900">Sadhana Companion</span>
           </Link>
           <div className="flex items-center gap-2">
@@ -80,9 +79,7 @@ export default async function LandingPage() {
       <main className="flex-1">
         {/* Hero */}
         <section className="relative overflow-hidden bg-gradient-to-b from-saffron-200 via-saffron-100 to-cream">
-          <LotusMark
-            className="pointer-events-none absolute -right-16 -top-16 h-[28rem] w-[28rem] select-none text-saffron-300/30"
-          />
+          <LotusHero className="absolute -bottom-8 -right-6 hidden w-[26rem] opacity-90 drop-shadow-xl sm:block lg:w-[34rem]" />
           <div className="relative mx-auto max-w-6xl px-4 py-16 sm:py-24">
             <p className="text-sm font-semibold uppercase tracking-widest text-saffron-800">
               ISKCON · Bhakti Vriksha Program
@@ -182,9 +179,7 @@ export default async function LandingPage() {
 
         {/* Final call to action */}
         <section className="mx-auto max-w-6xl px-4 py-14 text-center sm:py-20">
-          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-md">
-            <LotusMark className="h-8 w-8" />
-          </span>
+          <LotusLogo className="mx-auto h-20 w-20 drop-shadow-sm" />
           <h2 className="mt-4 text-2xl font-bold text-saffron-950 sm:text-3xl">
             Ready to begin your journey?
           </h2>
@@ -214,7 +209,7 @@ export default async function LandingPage() {
       <footer className="border-t border-saffron-900/10 bg-white/60">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-6 text-sm text-saffron-900/60">
           <p className="flex items-center gap-1.5">
-            <LotusMark className="h-4 w-4 text-saffron-600" /> Hare Krishna · Sadhana Companion
+            <LotusLogo className="h-5 w-5" /> Hare Krishna · Sadhana Companion
           </p>
           <p>ISKCON Bhakti Vriksha program</p>
         </div>

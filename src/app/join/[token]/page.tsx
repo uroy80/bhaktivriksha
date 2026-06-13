@@ -5,7 +5,8 @@ import { prisma } from "@/lib/db";
 import { getInviteHost } from "@/lib/invite";
 import { homeFor } from "@/lib/guards";
 import { ButtonLink, Card } from "@/components/ui";
-import { Icon, LotusMark } from "@/components/icons";
+import { Icon } from "@/components/icons";
+import { LotusLogo } from "@/components/lotus";
 import { JoinButton } from "./join-button";
 
 export const metadata: Metadata = { title: "Join a group" };
@@ -15,9 +16,7 @@ function Shell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-saffron-100 via-saffron-50 to-cream px-4 py-10">
       <Card className="w-full max-w-md p-8 text-center">
         <Link href="/" className="mb-5 inline-flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-md">
-            <LotusMark className="h-5 w-5" />
-          </span>
+          <LotusLogo className="h-11 w-11" />
           <span className="font-bold text-saffron-900">Sadhana Companion</span>
         </Link>
         {children}
