@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🪷 Sadhana Companion
 
-## Getting Started
+Industry-grade temple management platform for the Bhakti Vriksha program — **Phase 1: DRM (Devotee Relationship Management) + Sadhana Companion**, interconnected.
 
-First, run the development server:
+Future phases: book stock management, book purchase website, main temple website.
+
+## What it does
+
+- **One Admin** (bootstrapped via a secret setup code) oversees the whole temple.
+- **Milkyway hierarchy**: admin assigns missionaries; each missionary shepherds n devotees and may appoint sub-missionaries — arbitrary depth. Every superior sees their entire subtree.
+- **Sadhana levels** (from [bhaktisteps.com](https://bhaktisteps.com/sadhana-levels/)): Sraddhavan → Krishna Sevaka → Krishna Sadhaka → Srila Prabhupada Asraya → Sri Guru Carana Asraya, with full standards & recommended practices. Admin tags devotees; devotees apply to advance.
+- **Application area**: newcomers apply to join; existing devotees apply for level advancement; admin reviews with mentor + level assignment.
+- **Attendance**: missionaries mark satsanga/class attendance with a slide-to-mark control; downloadable as CSV and as the printable **Bhakti Vriksha Group Weekly Report** register (Weeks 1–5 × A/S + EFFORTS table).
+- **Follow-ups**: every phone call / WhatsApp / email / SMS / home visit to an absent devotee is logged, reportable, downloadable.
+- **Progress reports**: missionaries send daily/weekly updates (with effort counters) up the chain.
+- **Sadhana journal**: every devotee tracks japa, reading, aratis, lectures — streaks and consistency visible to their counsellor.
+
+## Stack
+
+Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4 · Prisma 6 · PostgreSQL · NextAuth v5
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full design.
+
+## Local development
 
 ```bash
+npm install
+docker compose -f docker-compose.dev.yml up -d   # Postgres on localhost:5433
+cp .env.example .env                              # then fill values
+npm run db:migrate                                # apply migrations
+npm run db:seed                                   # seed the 5 sadhana levels
+npx tsx scripts/dev-fixtures.ts                   # optional: rich test data
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+First run: open `/setup` to create the admin (requires `ADMIN_SETUP_CODE` from `.env`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Var | Purpose |
+|-----|---------|
+| `DATABASE_URL` | Postgres connection string |
+| `AUTH_SECRET` | NextAuth JWT secret (`openssl rand -base64 32`) |
+| `ADMIN_SETUP_CODE` | Secret required by the one-time `/setup` screen |
