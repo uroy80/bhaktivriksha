@@ -79,7 +79,7 @@ export default async function LandingPage() {
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-saffron-200 via-saffron-100 to-cream">
+        <section className="relative bg-gradient-to-b from-saffron-200 via-saffron-100 to-cream">
           <div className="relative mx-auto grid max-w-6xl items-center gap-8 px-4 py-16 sm:py-20 lg:grid-cols-[1.1fr_0.9fr]">
             <div>
               <p className="text-sm font-semibold uppercase tracking-widest text-saffron-800">
@@ -124,7 +124,7 @@ export default async function LandingPage() {
                   className="absolute left-1/2 top-1/4 -z-10 h-64 w-64 -translate-x-1/2 rounded-full bg-saffron-300/40 blur-3xl sm:h-80 sm:w-80"
                 />
                 {/* the hand-painted lotus flower as His pedestal — feet rest on the petals */}
-                <LotusFlower className="absolute bottom-0 left-1/2 z-0 w-[92%] -translate-x-1/2 translate-y-[34%] drop-shadow-md" />
+                <LotusFlower className="absolute bottom-0 left-1/2 z-0 w-[120%] -translate-x-1/2 translate-y-[12%] drop-shadow-md" />
                 {/* Krishna in front, standing on the petals */}
                 <KrishnaImage
                   priority
