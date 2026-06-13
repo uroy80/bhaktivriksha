@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { Card } from "@/components/ui";
 import { LotusLogo } from "@/components/lotus";
+import { KrishnaImage } from "@/components/devotional";
 import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = { title: "Sign in" };
@@ -16,10 +17,12 @@ export default async function LoginPage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-saffron-100 via-saffron-50 to-cream px-4 py-10">
-      <Link href="/" className="mb-6 flex items-center gap-2">
+      <Link href="/" className="mb-4 flex items-center gap-2">
         <LotusLogo className="h-12 w-12" />
         <span className="text-xl font-bold text-saffron-900">Sadhana Companion</span>
       </Link>
+
+      <KrishnaImage className="mb-2 h-36 w-auto drop-shadow-md" />
 
       <Card className="w-full max-w-md p-6 sm:p-8">
         <h1 className="text-xl font-bold text-saffron-950">Hare Krishna, welcome back</h1>

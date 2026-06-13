@@ -4,7 +4,8 @@ import { prisma } from "@/lib/db";
 import { homeFor } from "@/lib/guards";
 import { ButtonLink, Card } from "@/components/ui";
 import { Icon, type IconName } from "@/components/icons";
-import { LotusLogo, LotusHero } from "@/components/lotus";
+import { LotusLogo } from "@/components/lotus";
+import { KrishnaImage, PrabhupadaPortrait } from "@/components/devotional";
 
 // Public landing page — the front door of Sadhana Companion.
 // No auth required; signed-in users get a shortcut to their dashboard.
@@ -79,39 +80,49 @@ export default async function LandingPage() {
       <main className="flex-1">
         {/* Hero */}
         <section className="relative overflow-hidden bg-gradient-to-b from-saffron-200 via-saffron-100 to-cream">
-          <LotusHero className="absolute -bottom-8 -right-6 hidden w-[26rem] opacity-90 drop-shadow-xl sm:block lg:w-[34rem]" />
-          <div className="relative mx-auto max-w-6xl px-4 py-16 sm:py-24">
-            <p className="text-sm font-semibold uppercase tracking-widest text-saffron-800">
-              ISKCON · Bhakti Vriksha Program
-            </p>
-            <h1 className="mt-3 max-w-2xl text-4xl font-extrabold tracking-tight text-saffron-950 sm:text-5xl">
-              Walk the path of bhakti,
-              <span className="block text-saffron-700">one step at a time.</span>
-            </h1>
-            <p className="mt-4 max-w-xl text-lg leading-8 text-saffron-900/80">
-              Sadhana Companion helps devotees grow through the five sadhana levels — and helps
-              counsellors care for every soul in their group with attendance, follow-ups and
-              progress reports.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              {dashboardHref ? (
-                <ButtonLink href={dashboardHref} className="px-6 py-3 text-base">
-                  Go to my dashboard
-                </ButtonLink>
-              ) : (
-                <>
-                  <ButtonLink href="/register" className="px-6 py-3 text-base">
-                    Begin my sadhana
+          <div className="relative mx-auto grid max-w-6xl items-center gap-8 px-4 py-16 sm:py-20 lg:grid-cols-[1.1fr_0.9fr]">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-widest text-saffron-800">
+                ISKCON · Bhakti Vriksha Program
+              </p>
+              <h1 className="mt-3 max-w-2xl text-4xl font-extrabold tracking-tight text-saffron-950 sm:text-5xl">
+                Walk the path of bhakti,
+                <span className="block text-saffron-700">one step at a time.</span>
+              </h1>
+              <p className="mt-4 max-w-xl text-lg leading-8 text-saffron-900/80">
+                Sadhana Companion helps devotees grow through the five sadhana levels — and helps
+                counsellors care for every soul in their group with attendance, follow-ups and
+                progress reports.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                {dashboardHref ? (
+                  <ButtonLink href={dashboardHref} className="px-6 py-3 text-base">
+                    Go to my dashboard
                   </ButtonLink>
-                  <ButtonLink href="/login" variant="secondary" className="px-6 py-3 text-base">
-                    Sign in
-                  </ButtonLink>
-                </>
-              )}
+                ) : (
+                  <>
+                    <ButtonLink href="/register" className="px-6 py-3 text-base">
+                      Begin my sadhana
+                    </ButtonLink>
+                    <ButtonLink href="/login" variant="secondary" className="px-6 py-3 text-base">
+                      Sign in
+                    </ButtonLink>
+                  </>
+                )}
+              </div>
+              <p className="mt-3 text-sm text-saffron-900/60">
+                Free to start · no approval needed · a counsellor can welcome you anytime.
+              </p>
             </div>
-            <p className="mt-3 text-sm text-saffron-900/60">
-              Free to start · no approval needed · a counsellor can welcome you anytime.
-            </p>
+
+            {/* Lord Krishna — the object of all devotion */}
+            <div className="relative flex justify-center lg:justify-end">
+              <div
+                aria-hidden
+                className="absolute inset-0 -z-10 mx-auto my-auto h-72 w-72 rounded-full bg-saffron-300/40 blur-3xl sm:h-96 sm:w-96"
+              />
+              <KrishnaImage priority className="h-72 w-auto drop-shadow-xl sm:h-96 lg:h-[30rem]" />
+            </div>
           </div>
         </section>
 
@@ -170,6 +181,32 @@ export default async function LandingPage() {
               ))}
             </ol>
           )}
+        </section>
+
+        {/* Srila Prabhupada — the founder-acharya */}
+        <section className="border-y border-saffron-900/10 bg-gradient-to-b from-maroon-50/40 to-cream">
+          <div className="mx-auto flex max-w-5xl flex-col items-center gap-8 px-4 py-14 text-center sm:py-20 md:flex-row md:text-left">
+            <div className="shrink-0">
+              <PrabhupadaPortrait className="h-40 w-40 ring-4 ring-saffron-200 ring-offset-2 ring-offset-cream sm:h-48 sm:w-48" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-widest text-saffron-800">
+                Founder-Acharya
+              </p>
+              <h2 className="mt-2 text-2xl font-bold text-saffron-950 sm:text-3xl">
+                His Divine Grace A.C. Bhaktivedanta Swami Prabhupada
+              </h2>
+              <p className="mt-3 max-w-2xl leading-7 text-saffron-900/80">
+                Every standard, prayer and book on this path comes from Srila Prabhupada, who
+                carried Lord Krishna&apos;s message around the world. The sadhana levels are his
+                gift — a clear, gradual ladder so that anyone, anywhere, can take up the practice of
+                bhakti under loving guidance.
+              </p>
+              <p className="mt-4 text-sm italic text-saffron-900/70">
+                &ldquo;Chant Hare Krishna and be happy.&rdquo;
+              </p>
+            </div>
+          </div>
         </section>
 
         {/* What's inside */}

@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db";
 import { cn, formatDate, toDateKey } from "@/lib/utils";
 import { Badge, ButtonLink, Card } from "@/components/ui";
 import { Icon } from "@/components/icons";
-import { LotusLogo } from "@/components/lotus";
+import { KrishnaImage } from "@/components/devotional";
 
 export default async function DevoteeHomePage() {
   const user = await requireRole("DEVOTEE", "MISSIONARY", "ADMIN");
@@ -43,9 +43,8 @@ export default async function DevoteeHomePage() {
 
   return (
     <div>
-      {/* Warm greeting */}
-      <div className="mb-6 flex items-center gap-3">
-        <LotusLogo className="h-12 w-12 shrink-0" />
+      {/* Warm devotional greeting */}
+      <div className="mb-6 flex items-center justify-between gap-3 overflow-hidden rounded-2xl bg-gradient-to-r from-saffron-200 via-saffron-100 to-cream p-5 ring-1 ring-saffron-900/10">
         <div>
           <h1 className="text-2xl font-bold text-saffron-950 sm:text-3xl">
             Hare Krishna, {firstName}
@@ -54,6 +53,7 @@ export default async function DevoteeHomePage() {
             {formatDate(now)} · Sadhana Companion
           </p>
         </div>
+        <KrishnaImage className="h-24 w-auto shrink-0 drop-shadow-md sm:h-28" />
       </div>
 
       {/* Pending application banner */}

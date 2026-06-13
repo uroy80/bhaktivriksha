@@ -9,6 +9,7 @@ import { prisma } from "@/lib/db";
 import { Card } from "@/components/ui";
 import { Icon } from "@/components/icons";
 import { LotusLogo } from "@/components/lotus";
+import { KrishnaImage } from "@/components/devotional";
 import { RegisterForm } from "./register-form";
 
 export const metadata: Metadata = { title: "Create your account" };
@@ -59,6 +60,9 @@ export default async function RegisterPage(props: {
           </Card>
 
           <div className="space-y-6">
+            <Card className="flex items-center justify-center overflow-hidden bg-gradient-to-b from-saffron-100 to-cream py-6">
+              <KrishnaImage className="h-48 w-auto drop-shadow-md" />
+            </Card>
             <Card>
               <h2 className="font-semibold text-saffron-950">Why join?</h2>
               <ul className="mt-4 space-y-4">

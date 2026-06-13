@@ -6,6 +6,7 @@ import { ButtonLink, Card } from "@/components/ui";
 import { Icon } from "@/components/icons";
 import { PublicTopBar } from "@/components/public-top-bar";
 import { LevelSections } from "@/components/level-sections";
+import { PrabhupadaPortrait } from "@/components/devotional";
 import { parseSections } from "@/lib/levels";
 import { auth } from "@/auth";
 
@@ -67,6 +68,16 @@ export default async function PublicLevelPage(props: { params: Promise<{ slug: s
 
         <div className="mt-8">
           <LevelSections sections={sections} />
+        </div>
+
+        {/* The teachings come from Srila Prabhupada */}
+        <div className="mt-6 flex items-center gap-4 rounded-xl bg-maroon-50/50 p-4 ring-1 ring-saffron-900/10">
+          <PrabhupadaPortrait className="h-16 w-16 shrink-0 ring-2 ring-saffron-200" />
+          <p className="text-sm leading-6 text-saffron-900/80">
+            These standards and books are the teachings of{" "}
+            <span className="font-semibold text-saffron-950">Srila Prabhupada</span>, lovingly given
+            so every devotee can practise bhakti step by step.
+          </p>
         </div>
 
         {level.sourceUrl ? (
