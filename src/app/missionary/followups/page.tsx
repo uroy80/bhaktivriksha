@@ -18,8 +18,9 @@ import {
   Td,
   Th,
 } from "@/components/ui";
+import { Icon, channelMeta } from "@/components/icons";
 import { FollowUpForm, type SessionOption } from "./_components/FollowUpForm";
-import { CHANNEL_LABELS, CHANNEL_OPTIONS, CHANNEL_TONES, isFollowUpChannel } from "./_components/channels";
+import { CHANNEL_OPTIONS, CHANNEL_TONES, isFollowUpChannel } from "./_components/channels";
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -123,7 +124,12 @@ export default async function FollowUpsPage(props: {
 
       <div className="space-y-6">
         <Card>
-          <h2 className="mb-4 text-base font-semibold text-saffron-950">Log a follow-up</h2>
+          <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-saffron-950">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-saffron-100 text-saffron-700">
+              <Icon.followups className="h-[18px] w-[18px]" />
+            </span>
+            Log a follow-up
+          </h2>
           <FollowUpForm
             devotees={devotees}
             sessions={sessionOptions}
@@ -136,7 +142,8 @@ export default async function FollowUpsPage(props: {
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-base font-semibold text-saffron-950">Recent follow-ups</h2>
             <ButtonLink variant="secondary" href={exportHref}>
-              ⬇ Download CSV
+              <Icon.download className="h-4 w-4" />
+              Download CSV
             </ButtonLink>
           </div>
 
@@ -203,12 +210,18 @@ export default async function FollowUpsPage(props: {
                 </tr>
               </thead>
               <tbody className="divide-y divide-saffron-900/5">
-                {followUps.map((f) => (
+                {followUps.map((f) => {
+                  const meta = channelMeta[f.channel] ?? channelMeta.OTHER;
+                  const ChannelIcon = meta.icon;
+                  return (
                   <tr key={f.id}>
                     <Td className="whitespace-nowrap">{formatDateTime(f.occurredAt)}</Td>
                     <Td className="font-medium">{f.devotee.name}</Td>
                     <Td>
-                      <Badge tone={CHANNEL_TONES[f.channel]}>{CHANNEL_LABELS[f.channel]}</Badge>
+                      <Badge tone={CHANNEL_TONES[f.channel]}>
+                        <ChannelIcon className="mr-1 h-3.5 w-3.5" />
+                        {meta.label}
+                      </Badge>
                     </Td>
                     <Td>{f.by.name}</Td>
                     <Td className="max-w-xs">
@@ -230,7 +243,8 @@ export default async function FollowUpsPage(props: {
                       )}
                     </Td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </Table>
           )}

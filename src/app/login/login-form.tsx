@@ -1,12 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Button, Field, Input } from "@/components/ui";
 
+// Only allow internal redirect targets (defence against open-redirect).
+function safeNext(value: string | null): string | null {
+  if (value && value.startsWith("/") && !value.startsWith("//")) return value;
+  return null;
+}
+
 export function LoginForm() {
   const router = useRouter();
+  const next = safeNext(useSearchParams().get("next"));
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -23,8 +30,9 @@ export function LoginForm() {
         setSubmitting(false);
         return;
       }
-      // Server-side redirector decides the right home for this role/status.
-      router.push("/post-login");
+      // Honour an internal ?next= (e.g. returning to a /join link), otherwise
+      // let the server-side redirector pick the right home for this role/status.
+      router.push(next ?? "/post-login");
       router.refresh();
     } catch {
       setError("Something went wrong. Please try again.");

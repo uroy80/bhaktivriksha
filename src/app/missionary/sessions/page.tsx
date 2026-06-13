@@ -4,6 +4,7 @@ import { requireRole } from "@/lib/guards";
 import { visibleUserIds } from "@/lib/hierarchy";
 import { formatDateTime } from "@/lib/utils";
 import { Badge, Card, EmptyState, PageHeader, Table, Td, Th } from "@/components/ui";
+import { Icon } from "@/components/icons";
 import { SessionForm } from "./session-form";
 
 const typeTone = { SATSANGA: "saffron", CLASS: "blue", OTHER: "gray" } as const;
@@ -45,7 +46,12 @@ export default async function MissionarySessionsPage() {
 
       <div className="grid gap-6 lg:grid-cols-5">
         <Card className="lg:col-span-2 lg:self-start">
-          <h2 className="mb-4 text-base font-semibold text-saffron-950">New session</h2>
+          <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-saffron-950">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-saffron-100 text-saffron-700">
+              <Icon.sessions className="h-[18px] w-[18px]" />
+            </span>
+            New session
+          </h2>
           <SessionForm />
         </Card>
 

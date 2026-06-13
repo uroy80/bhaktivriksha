@@ -3,6 +3,7 @@ import type { Role, UserStatus } from "@prisma/client";
 import { requireRole } from "@/lib/guards";
 import { prisma } from "@/lib/db";
 import { Badge, Card, EmptyState, PageHeader } from "@/components/ui";
+import { Icon, type IconName } from "@/components/icons";
 
 type TreeUser = {
   id: string;
@@ -18,6 +19,12 @@ const roleTone: Record<Role, "red" | "blue" | "saffron"> = {
   ADMIN: "red",
   MISSIONARY: "blue",
   DEVOTEE: "saffron",
+};
+
+const roleIcon: Record<Role, IconName> = {
+  ADMIN: "lotus",
+  MISSIONARY: "group",
+  DEVOTEE: "heart",
 };
 
 const roleRank: Record<Role, number> = { ADMIN: 0, MISSIONARY: 1, DEVOTEE: 2 };
@@ -67,7 +74,12 @@ export default async function HierarchyPage() {
       ) : (
         <div className="space-y-6">
           <Card>
-            <h2 className="mb-3 text-base font-semibold text-saffron-950">Temple tree</h2>
+            <div className="mb-3 flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-sm">
+                <Icon.hierarchy className="h-[18px] w-[18px]" />
+              </span>
+              <h2 className="text-base font-semibold text-saffron-950">Temple tree</h2>
+            </div>
             <ul className="space-y-1">
               {admins.map((a) => (
                 <TreeNode key={a.id} node={a} byMentor={byMentor} />
@@ -77,8 +89,14 @@ export default async function HierarchyPage() {
 
           {unassigned.length > 0 && (
             <Card className="ring-maroon-700/20">
-              <h2 className="text-base font-semibold text-maroon-800">Unassigned</h2>
-              <p className="mt-0.5 mb-3 text-xs text-stone-500">
+              <div className="flex items-center gap-2">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-maroon-100 text-maroon-700">
+                  <Icon.claim className="h-[18px] w-[18px]" />
+                </span>
+                <h2 className="text-base font-semibold text-maroon-800">Unassigned</h2>
+                <Badge tone="red">{unassigned.length}</Badge>
+              </div>
+              <p className="mt-1 mb-3 text-xs text-stone-500">
                 People without a mentor — they are outside the milkyway tree. Open a profile to
                 assign one.
               </p>
@@ -97,12 +115,26 @@ export default async function HierarchyPage() {
 
 function TreeNode({ node, byMentor }: { node: TreeUser; byMentor: Map<string, TreeUser[]> }) {
   const children = byMentor.get(node.id) ?? [];
+  const RoleIcon = Icon[roleIcon[node.role]];
+  const tile =
+    node.role === "ADMIN"
+      ? "bg-maroon-100 text-maroon-700"
+      : node.role === "MISSIONARY"
+        ? "bg-sky-100 text-sky-700"
+        : "bg-saffron-100 text-saffron-700";
   return (
     <li>
       <Link
         href={`/admin/devotees/${node.id}`}
         className="flex flex-wrap items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-saffron-50"
       >
+        <span
+          className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${tile} ${
+            node.status === "INACTIVE" ? "opacity-50" : ""
+          }`}
+        >
+          <RoleIcon className="h-3.5 w-3.5" />
+        </span>
         <span
           className={
             node.status === "INACTIVE"
@@ -120,13 +152,14 @@ function TreeNode({ node, byMentor }: { node: TreeUser; byMentor: Map<string, Tr
         ) : null}
         {node.status === "PENDING" ? <Badge tone="gray">PENDING</Badge> : null}
         {node._count.mentees > 0 ? (
-          <span className="text-xs text-saffron-700">
-            · {node._count.mentees} {node._count.mentees === 1 ? "mentee" : "mentees"}
+          <span className="inline-flex items-center gap-1 text-xs text-saffron-700">
+            <Icon.devotees className="h-3.5 w-3.5" />
+            {node._count.mentees} {node._count.mentees === 1 ? "mentee" : "mentees"}
           </span>
         ) : null}
       </Link>
       {children.length > 0 && (
-        <ul className="ml-4 space-y-1 border-l-2 border-saffron-200 pl-3">
+        <ul className="ml-5 space-y-1 border-l-2 border-saffron-200 pl-3">
           {children.map((c) => (
             <TreeNode key={c.id} node={c} byMentor={byMentor} />
           ))}

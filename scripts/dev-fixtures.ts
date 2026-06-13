@@ -285,8 +285,46 @@ async function main() {
     }
   }
 
+  // Self-registered, UNASSIGNED devotees (open registration) — ACTIVE, no mentor.
+  // These appear in the admin "Unassigned" list and the missionary "claim" list.
+  const unassignedSpecs = [
+    { name: "Lakshmi Iyer", email: "lakshmi@temple.test" },
+    { name: "Mohan Verma", email: "mohan@temple.test" },
+    { name: "Priya Nair", email: "priya@temple.test" },
+  ];
+  for (const [i, spec] of unassignedSpecs.entries()) {
+    const passwordHash = await bcrypt.hash(PASSWORD, 10);
+    await prisma.user.upsert({
+      where: { email: spec.email },
+      update: {},
+      create: {
+        name: spec.name,
+        email: spec.email,
+        passwordHash,
+        role: "DEVOTEE",
+        status: "ACTIVE",
+        mentorId: null,
+        joinedAt: daysAgo(i + 1),
+        phone: `+91 90000 3000${i}`,
+      },
+    });
+  }
+
+  // Give missionaries a stable invite token (so /missionary/invite QR renders).
+  for (const [m, token] of [
+    [madhava, "demo-madhava1"],
+    [nitai, "demo-nitai001"],
+    [gauranga, "demo-gauranga"],
+  ] as const) {
+    await prisma.user.update({
+      where: { id: (m as { id: string }).id },
+      data: { inviteToken: token as string },
+    });
+  }
+
   const counts = {
     users: await prisma.user.count(),
+    unassigned: await prisma.user.count({ where: { role: "DEVOTEE", status: "ACTIVE", mentorId: null } }),
     sessions: await prisma.classSession.count(),
     attendance: await prisma.attendance.count(),
     followUps: await prisma.followUp.count(),

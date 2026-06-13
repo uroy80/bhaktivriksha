@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireRole } from "@/lib/guards";
 import { prisma } from "@/lib/db";
 import { Badge, Card, EmptyState, PageHeader } from "@/components/ui";
+import { Icon } from "@/components/icons";
 
 export default async function LevelsPage() {
   await requireRole("ADMIN");
@@ -33,7 +34,7 @@ export default async function LevelsPage() {
             >
               <Card className="h-full transition-shadow hover:shadow-md">
                 <div className="flex items-start justify-between gap-2">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-saffron-100 text-base font-bold text-saffron-800">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-saffron-400 to-saffron-600 text-base font-bold text-white shadow-sm">
                     {level.order}
                   </span>
                   <Badge tone={level._count.users > 0 ? "green" : "gray"}>
@@ -44,8 +45,9 @@ export default async function LevelsPage() {
                 {level.summary ? (
                   <p className="mt-1 text-sm leading-relaxed text-stone-600">{level.summary}</p>
                 ) : null}
-                <p className="mt-3 text-sm font-medium text-saffron-700">
-                  View standards &amp; devotees →
+                <p className="mt-3 inline-flex items-center gap-0.5 text-sm font-medium text-saffron-700">
+                  View standards &amp; devotees
+                  <Icon.chevron className="h-4 w-4" />
                 </p>
               </Card>
             </Link>

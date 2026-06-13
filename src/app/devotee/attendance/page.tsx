@@ -15,19 +15,10 @@ import {
   Td,
   Th,
 } from "@/components/ui";
-import type { FollowUpChannel, SessionType } from "@prisma/client";
+import { Icon, channelMeta } from "@/components/icons";
+import type { SessionType } from "@prisma/client";
 
 const MONTH_RE = /^\d{4}-(0[1-9]|1[0-2])$/;
-
-const CHANNEL_META: Record<FollowUpChannel, { icon: string; label: string }> = {
-  PHONE_CALL: { icon: "📞", label: "Phone call" },
-  WHATSAPP: { icon: "💬", label: "WhatsApp" },
-  EMAIL: { icon: "✉️", label: "Email" },
-  SMS: { icon: "📱", label: "SMS" },
-  HOME_VISIT: { icon: "🏠", label: "Home visit" },
-  IN_PERSON: { icon: "🤝", label: "In person" },
-  OTHER: { icon: "📝", label: "Other" },
-};
 
 const TYPE_TONES: Record<SessionType, "saffron" | "blue" | "gray"> = {
   SATSANGA: "saffron",
@@ -128,7 +119,7 @@ export default async function MyAttendancePage(props: {
   return (
     <div>
       <PageHeader
-        title="My Attendance ✅"
+        title="My Attendance"
         subtitle="Your presence at satsangas and classes — and the care you receive"
       />
 
@@ -156,11 +147,13 @@ export default async function MyAttendancePage(props: {
         </form>
         <div className="flex gap-2 pb-0.5">
           <ButtonLink variant="ghost" href={`/devotee/attendance?month=${prevKey}`}>
-            ← {monthLabel(prev.getFullYear(), prev.getMonth() + 1)}
+            <Icon.chevron className="h-4 w-4 rotate-180" />
+            {monthLabel(prev.getFullYear(), prev.getMonth() + 1)}
           </ButtonLink>
           {nextKey <= currentKey ? (
             <ButtonLink variant="ghost" href={`/devotee/attendance?month=${nextKey}`}>
-              {monthLabel(next.getFullYear(), next.getMonth() + 1)} →
+              {monthLabel(next.getFullYear(), next.getMonth() + 1)}
+              <Icon.chevron className="h-4 w-4" />
             </ButtonLink>
           ) : null}
         </div>
@@ -194,7 +187,15 @@ export default async function MyAttendancePage(props: {
                 </Td>
                 <Td>{r.session.conductedBy.name}</Td>
                 <Td>
-                  {r.present ? <Badge tone="green">P · Present</Badge> : <Badge tone="red">A · Absent</Badge>}
+                  {r.present ? (
+                    <Badge tone="green">
+                      <Icon.check className="mr-1 h-3.5 w-3.5" />P · Present
+                    </Badge>
+                  ) : (
+                    <Badge tone="red">
+                      <Icon.minus className="mr-1 h-3.5 w-3.5" />A · Absent
+                    </Badge>
+                  )}
                 </Td>
                 <Td className="max-w-xs truncate text-stone-500">{r.remarks ?? ""}</Td>
               </tr>
@@ -205,7 +206,12 @@ export default async function MyAttendancePage(props: {
 
       {/* Follow-ups received — the care you receive */}
       <section className="mt-8">
-        <h2 className="mb-1 text-lg font-semibold text-saffron-950">💝 Care you&apos;ve received</h2>
+        <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold text-saffron-950">
+          <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-saffron-100 text-saffron-700">
+            <Icon.heart className="h-4 w-4" />
+          </span>
+          Care you&apos;ve received
+        </h2>
         <p className="mb-3 text-sm text-saffron-900/60">
           Every time your counsellor reached out to you.
         </p>
@@ -217,12 +223,16 @@ export default async function MyAttendancePage(props: {
         ) : (
           <div className="space-y-3">
             {followUps.map((f) => {
-              const meta = CHANNEL_META[f.channel];
+              const meta = channelMeta[f.channel] ?? channelMeta.OTHER;
+              const ChannelIcon = meta.icon;
               return (
                 <Card key={f.id} className="p-4">
                   <div className="flex flex-wrap items-center gap-2 text-sm">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-saffron-100 text-saffron-700">
+                      <ChannelIcon className="h-4 w-4" />
+                    </span>
                     <span className="font-semibold text-saffron-950">
-                      {meta.icon} {f.by.name} reached out
+                      {f.by.name} reached out
                     </span>
                     <Badge tone="blue">{meta.label}</Badge>
                     <span className="text-xs text-saffron-900/50">{formatDate(f.occurredAt)}</span>

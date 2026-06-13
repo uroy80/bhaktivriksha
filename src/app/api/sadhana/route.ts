@@ -31,8 +31,16 @@ export async function PUT(req: Request) {
     );
   }
 
-  const { date, japaRounds, readingMinutes, mangalArati, eveningArati, lectureHeard, notes } =
-    parsed.data;
+  const {
+    date,
+    japaRounds,
+    chantingQuality,
+    readingMinutes,
+    mangalArati,
+    eveningArati,
+    lectureHeard,
+    notes,
+  } = parsed.data;
 
   // YYYY-MM-DD strings compare correctly lexicographically.
   if (date > toDateKey(new Date())) {
@@ -50,6 +58,7 @@ export async function PUT(req: Request) {
 
   const fields = {
     japaRounds,
+    chantingQuality: chantingQuality ?? null,
     readingMinutes,
     mangalArati,
     eveningArati,

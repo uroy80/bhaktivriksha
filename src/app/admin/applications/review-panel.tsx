@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Field, Input, Select, Textarea } from "@/components/ui";
+import { Icon } from "@/components/icons";
 
 type LevelOption = { id: string; name: string; order: number };
 type MentorOption = { id: string; name: string; role: "ADMIN" | "MISSIONARY" };
@@ -70,7 +71,10 @@ export function ReviewPanel({
 
   return (
     <div className="mt-4 rounded-lg bg-saffron-50/70 p-4 ring-1 ring-saffron-200">
-      <p className="mb-3 text-sm font-semibold text-saffron-950">Review</p>
+      <p className="mb-3 flex items-center gap-1.5 text-sm font-semibold text-saffron-950">
+        <Icon.applications className="h-4 w-4 text-saffron-600" />
+        Review
+      </p>
 
       <div className="grid gap-3 sm:grid-cols-2">
         {type === "JOIN" ? (
@@ -124,9 +128,11 @@ export function ReviewPanel({
 
       <div className="mt-4 flex flex-wrap gap-2">
         <Button onClick={() => review("APPROVE")} disabled={busy !== null}>
+          <Icon.check className="h-4 w-4" />
           {busy === "APPROVE" ? "Approving…" : "Approve"}
         </Button>
         <Button variant="danger" onClick={() => review("REJECT")} disabled={busy !== null}>
+          <Icon.minus className="h-4 w-4" />
           {busy === "REJECT" ? "Rejecting…" : "Reject"}
         </Button>
       </div>

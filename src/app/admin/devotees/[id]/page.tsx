@@ -6,6 +6,7 @@ import { prisma } from "@/lib/db";
 import { getDirectMentees, getSuperiorChain } from "@/lib/hierarchy";
 import { formatDate, formatDateTime } from "@/lib/utils";
 import { Badge, ButtonLink, Card, PageHeader, Table, Td, Th } from "@/components/ui";
+import { Icon } from "@/components/icons";
 import { ManageDevotee } from "./manage-devotee";
 
 const roleTone: Record<Role, "red" | "blue" | "saffron"> = {
@@ -90,7 +91,8 @@ export default async function DevoteeDetailPage(props: { params: Promise<{ id: s
         subtitle={devotee.email}
         actions={
           <ButtonLink href="/admin/devotees" variant="secondary">
-            ← All devotees
+            <Icon.devotees className="h-4 w-4" />
+            All devotees
           </ButtonLink>
         }
       />
@@ -134,9 +136,10 @@ export default async function DevoteeDetailPage(props: { params: Promise<{ id: s
                 ) : null}
                 <Link
                   href={`/admin/levels/${devotee.sadhanaLevel.slug}`}
-                  className="text-xs font-medium text-saffron-700 hover:underline"
+                  className="inline-flex items-center gap-0.5 text-xs font-medium text-saffron-700 hover:underline"
                 >
-                  View level standards →
+                  View level standards
+                  <Icon.chevron className="h-3.5 w-3.5" />
                 </Link>
               </div>
             ) : (
@@ -308,7 +311,7 @@ export default async function DevoteeDetailPage(props: { params: Promise<{ id: s
               <ol className="mt-2 space-y-1.5">
                 {chain.map((c) => (
                   <li key={c.id} className="flex items-center gap-2 text-sm">
-                    <span className="text-stone-400">↑</span>
+                    <Icon.hierarchy className="h-3.5 w-3.5 shrink-0 text-saffron-400" aria-hidden />
                     <Link
                       href={`/admin/devotees/${c.id}`}
                       className="font-medium text-saffron-800 hover:underline"
@@ -324,9 +327,10 @@ export default async function DevoteeDetailPage(props: { params: Promise<{ id: s
             )}
             <Link
               href="/admin/hierarchy"
-              className="mt-3 inline-block text-xs font-medium text-saffron-700 hover:underline"
+              className="mt-3 inline-flex items-center gap-0.5 text-xs font-medium text-saffron-700 hover:underline"
             >
-              View full hierarchy →
+              View full hierarchy
+              <Icon.chevron className="h-3.5 w-3.5" />
             </Link>
           </Card>
 

@@ -4,6 +4,7 @@ import { requireRole } from "@/lib/guards";
 import { getDescendantIds } from "@/lib/hierarchy";
 import { formatDate, formatDateTime, toDateKey, weekBounds } from "@/lib/utils";
 import { Badge, ButtonLink, Card, EmptyState, PageHeader } from "@/components/ui";
+import { Icon } from "@/components/icons";
 import { ReportForm, type EffortPrefill } from "./_components/ReportForm";
 
 async function effortCounts(byId: string, start: Date, end: Date): Promise<EffortPrefill> {
@@ -114,9 +115,11 @@ export default async function MissionaryReportsPage() {
         actions={
           <>
             <ButtonLink variant="secondary" href="/missionary/register">
+              <Icon.attendance className="h-4 w-4" />
               Weekly Register
             </ButtonLink>
             <ButtonLink variant="secondary" href="/api/reports/export">
+              <Icon.download className="h-4 w-4" />
               Download CSV
             </ButtonLink>
           </>

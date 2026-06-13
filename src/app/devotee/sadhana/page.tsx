@@ -2,8 +2,14 @@ import { requireRole } from "@/lib/guards";
 import { prisma } from "@/lib/db";
 import { cn, formatDate, toDateKey, weekBounds } from "@/lib/utils";
 import { Badge, Card, EmptyState, PageHeader, StatCard, Table, Td, Th } from "@/components/ui";
+import { Icon, LotusMark } from "@/components/icons";
 import { SadhanaForm } from "./sadhana-form";
-import { computeStreaks, entryDateKey, monthAggregates } from "./sadhana-stats";
+import {
+  computeStreaks,
+  entryDateKey,
+  monthAggregates,
+  monthChantingQuality,
+} from "./sadhana-stats";
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -30,7 +36,7 @@ export default async function SadhanaJournalPage(props: {
     }),
     prisma.sadhanaEntry.findMany({
       where: { userId: user.id },
-      select: { date: true, japaRounds: true },
+      select: { date: true, japaRounds: true, chantingQuality: true },
       orderBy: { date: "asc" },
     }),
     prisma.sadhanaEntry.findMany({
@@ -43,6 +49,7 @@ export default async function SadhanaJournalPage(props: {
   const keys = new Set(allEntries.map((e) => entryDateKey(e.date)));
   const { current, longest } = computeStreaks(keys, todayKey);
   const { daysLogged, avgJapa } = monthAggregates(allEntries, todayKey);
+  const { avg: avgQuality, rated: ratedDays } = monthChantingQuality(allEntries, todayKey);
   const dayOfMonth = Number(todayKey.slice(8, 10));
 
   // This week, Monday → Sunday
@@ -57,11 +64,16 @@ export default async function SadhanaJournalPage(props: {
   return (
     <div>
       <PageHeader
-        title="My Sadhana 📿"
+        title="My Sadhana"
         subtitle={
           dateKey === todayKey
             ? `Logging for today, ${formatDate(dateKey)}`
             : `Logging for ${formatDate(dateKey)}`
+        }
+        actions={
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-sm">
+            <LotusMark className="h-6 w-6" />
+          </span>
         }
       />
 
@@ -76,6 +88,7 @@ export default async function SadhanaJournalPage(props: {
               entry
                 ? {
                     japaRounds: entry.japaRounds,
+                    chantingQuality: entry.chantingQuality,
                     readingMinutes: entry.readingMinutes,
                     mangalArati: entry.mangalArati,
                     eveningArati: entry.eveningArati,
@@ -108,7 +121,11 @@ export default async function SadhanaJournalPage(props: {
                     )}
                     title={formatDate(d.key)}
                   >
-                    {d.logged ? "✓" : "·"}
+                    {d.logged ? (
+                      <Icon.check className="h-4 w-4" />
+                    ) : (
+                      <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                    )}
                   </span>
                   <span className="text-[10px] font-medium text-saffron-900/60">{d.label}</span>
                 </div>
@@ -119,7 +136,12 @@ export default async function SadhanaJournalPage(props: {
           <div className="grid grid-cols-2 gap-4">
             <StatCard
               label="Current streak"
-              value={`${current} 🔥`}
+              value={
+                <span className="flex items-center gap-2">
+                  {current}
+                  <Icon.streak className="h-7 w-7 text-saffron-500" />
+                </span>
+              }
               sub={current === 1 ? "day in a row" : "days in a row"}
             />
             <StatCard label="Longest streak" value={longest} sub="days, all time" />
@@ -129,6 +151,24 @@ export default async function SadhanaJournalPage(props: {
               sub={`of ${dayOfMonth} days logged`}
             />
             <StatCard label="Avg japa" value={avgJapa} sub="rounds/day this month" />
+            <StatCard
+              label="Avg chanting"
+              value={
+                avgQuality == null ? (
+                  "—"
+                ) : (
+                  <span className="flex items-baseline gap-1">
+                    {avgQuality}
+                    <span className="text-lg font-semibold text-saffron-900/50">/ 10</span>
+                  </span>
+                )
+              }
+              sub={
+                avgQuality == null
+                  ? "not rated yet this month"
+                  : `from ${ratedDays} rated ${ratedDays === 1 ? "day" : "days"}`
+              }
+            />
           </div>
         </div>
       </div>
@@ -138,18 +178,46 @@ export default async function SadhanaJournalPage(props: {
       {recentEntries.length === 0 ? (
         <EmptyState
           title="No entries yet"
-          hint="Save your first day above — your journey begins with one round 🙏"
+          hint="Save your first day above — your journey begins with one round. Hare Krishna"
         />
       ) : (
         <Table>
           <thead className="bg-saffron-50">
             <tr>
               <Th>Date</Th>
-              <Th>📿 Japa</Th>
-              <Th>📖 Reading</Th>
-              <Th>🌅</Th>
-              <Th>🪔</Th>
-              <Th>🎧</Th>
+              <Th>
+                <span className="flex items-center gap-1.5">
+                  <Icon.japa className="h-4 w-4 text-saffron-600" /> Japa
+                </span>
+              </Th>
+              <Th>
+                <span className="flex items-center gap-1.5">
+                  <Icon.bliss className="h-4 w-4 text-saffron-600" /> Chanting
+                </span>
+              </Th>
+              <Th>
+                <span className="flex items-center gap-1.5">
+                  <Icon.reading className="h-4 w-4 text-saffron-600" /> Reading
+                </span>
+              </Th>
+              <Th>
+                <span className="flex justify-center" title="Mangal Arati">
+                  <Icon.mangalArati className="h-4 w-4 text-saffron-600" />
+                  <span className="sr-only">Mangal Arati</span>
+                </span>
+              </Th>
+              <Th>
+                <span className="flex justify-center" title="Evening Arati">
+                  <Icon.eveningArati className="h-4 w-4 text-saffron-600" />
+                  <span className="sr-only">Evening Arati</span>
+                </span>
+              </Th>
+              <Th>
+                <span className="flex justify-center" title="Lecture heard">
+                  <Icon.lecture className="h-4 w-4 text-saffron-600" />
+                  <span className="sr-only">Lecture heard</span>
+                </span>
+              </Th>
               <Th>Notes</Th>
             </tr>
           </thead>
@@ -162,11 +230,20 @@ export default async function SadhanaJournalPage(props: {
                     {formatDate(k)}
                     {k === todayKey ? <Badge className="ml-2">Today</Badge> : null}
                   </Td>
-                  <Td>{e.japaRounds}</Td>
-                  <Td>{e.readingMinutes} min</Td>
-                  <Td>{e.mangalArati ? "✅" : "—"}</Td>
-                  <Td>{e.eveningArati ? "✅" : "—"}</Td>
-                  <Td>{e.lectureHeard ? "✅" : "—"}</Td>
+                  <Td className="font-medium tabular-nums">{e.japaRounds}</Td>
+                  <Td>
+                    <QualityMeter value={e.chantingQuality} />
+                  </Td>
+                  <Td className="whitespace-nowrap tabular-nums">{e.readingMinutes} min</Td>
+                  <Td>
+                    <PracticeMark on={e.mangalArati} label="Mangal Arati" />
+                  </Td>
+                  <Td>
+                    <PracticeMark on={e.eveningArati} label="Evening Arati" />
+                  </Td>
+                  <Td>
+                    <PracticeMark on={e.lectureHeard} label="Lecture heard" />
+                  </Td>
                   <Td className="max-w-xs truncate text-stone-500">{e.notes ?? ""}</Td>
                 </tr>
               );
@@ -175,5 +252,43 @@ export default async function SadhanaJournalPage(props: {
         </Table>
       )}
     </div>
+  );
+}
+
+/** A small 10-dot meter for a day's chanting quality; "—" when unrated. */
+function QualityMeter({ value }: { value: number | null }) {
+  if (value == null) return <span className="text-stone-400">—</span>;
+  return (
+    <span
+      className="flex items-center gap-1.5"
+      title={`Quality of chanting: ${value} of 10`}
+    >
+      <span className="flex gap-0.5" aria-hidden>
+        {Array.from({ length: 10 }, (_, i) => (
+          <span
+            key={i}
+            className={cn(
+              "h-2 w-1.5 rounded-sm",
+              i < value ? "bg-saffron-500" : "bg-saffron-100",
+            )}
+          />
+        ))}
+      </span>
+      <span className="text-xs font-semibold tabular-nums text-saffron-900/70">{value}/10</span>
+    </span>
+  );
+}
+
+/** A practice cell: saffron check when done, gentle dash when not. */
+function PracticeMark({ on, label }: { on: boolean; label: string }) {
+  return on ? (
+    <span className="flex justify-center text-saffron-600" title={`${label} done`}>
+      <Icon.check className="h-4 w-4" />
+      <span className="sr-only">{label} done</span>
+    </span>
+  ) : (
+    <span className="flex justify-center text-stone-300" title={`${label} not done`} aria-hidden>
+      —
+    </span>
   );
 }

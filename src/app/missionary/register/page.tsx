@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { requireRole } from "@/lib/guards";
 import { cn } from "@/lib/utils";
 import { ButtonLink, PageHeader } from "@/components/ui";
+import { Icon } from "@/components/icons";
 import { buildRegisterData, resolveMonth, weekRangeLabel } from "./_lib/data";
 import { RegisterControls } from "./_components/RegisterControls";
 
@@ -29,6 +30,7 @@ export default async function RegisterPage(props: {
           subtitle="Bhakti Vriksha Group Weekly Report Format — the paper register, digitized and printable."
           actions={
             <ButtonLink variant="secondary" href={`/api/register/export?month=${key}`}>
+              <Icon.download className="h-4 w-4" />
               Download CSV
             </ButtonLink>
           }

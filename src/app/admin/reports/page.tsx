@@ -16,6 +16,7 @@ import {
   Td,
   Th,
 } from "@/components/ui";
+import { Icon } from "@/components/icons";
 
 function monthBounds(year: number, month: number): { start: Date; end: Date } {
   return {
@@ -84,7 +85,12 @@ export default async function AdminReportsPage(props: {
       <PageHeader
         title="Progress Reports"
         subtitle="Every report submitted across the temple, with this month's combined efforts."
-        actions={<ButtonLink variant="secondary" href={csvHref}>Download CSV</ButtonLink>}
+        actions={
+          <ButtonLink variant="secondary" href={csvHref}>
+            <Icon.download className="h-4 w-4" />
+            Download CSV
+          </ButtonLink>
+        }
       />
 
       {/* This month's efforts across the temple */}
@@ -170,6 +176,11 @@ export default async function AdminReportsPage(props: {
                   <Td className="whitespace-nowrap font-medium">{r.author.name}</Td>
                   <Td>
                     <Badge tone={r.period === "WEEKLY" ? "saffron" : "blue"}>
+                      {r.period === "WEEKLY" ? (
+                        <Icon.sessions className="mr-1 h-3.5 w-3.5" />
+                      ) : (
+                        <Icon.clock className="mr-1 h-3.5 w-3.5" />
+                      )}
                       {r.period === "WEEKLY" ? "Weekly" : "Daily"}
                     </Badge>
                   </Td>

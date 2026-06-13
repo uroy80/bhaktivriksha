@@ -4,7 +4,9 @@ import { prisma } from "@/lib/db";
 import { getDescendantIds } from "@/lib/hierarchy";
 import { formatDate, toDateKey, weekBounds } from "@/lib/utils";
 import { Badge, ButtonLink, Card, PageHeader, StatCard } from "@/components/ui";
+import { Icon } from "@/components/icons";
 import { startOfDaysAgo } from "./group/group-data";
+import { ClaimUnassigned } from "./_components/claim-unassigned";
 
 export default async function MissionaryDashboardPage() {
   const user = await requireRole("MISSIONARY");
@@ -26,7 +28,15 @@ export default async function MissionaryDashboardPage() {
   const fourteenDaysAgo = startOfDaysAgo(14);
   const today = new Date(toDateKey());
 
-  const [sessionsThisMonth, followUpsThisWeek, latestSession, recentSadhana, todayEntries, lastFollowUps] =
+  const [
+    sessionsThisMonth,
+    followUpsThisWeek,
+    latestSession,
+    recentSadhana,
+    todayEntries,
+    lastFollowUps,
+    unassigned,
+  ] =
     await Promise.all([
       prisma.classSession.count({
         where: { conductedById: user.id, date: { gte: monthStart, lte: now } },
@@ -58,6 +68,13 @@ export default async function MissionaryDashboardPage() {
         where: { devoteeId: { in: menteeIds } },
         _max: { occurredAt: true },
       }),
+      // Devotees who self-registered and have no counsellor yet — newest first.
+      prisma.user.findMany({
+        where: { role: "DEVOTEE", status: "ACTIVE", mentorId: null },
+        orderBy: { createdAt: "desc" },
+        take: 20,
+        select: { id: true, name: true, createdAt: true },
+      }),
     ]);
 
   const directDevotees = mentees.filter((m) => m.role === "DEVOTEE").length;
@@ -86,8 +103,12 @@ export default async function MissionaryDashboardPage() {
         subtitle="Your group at a glance — care, connect, cultivate."
         actions={
           <>
-            <ButtonLink href="/missionary/sessions">+ New session</ButtonLink>
+            <ButtonLink href="/missionary/sessions">
+              <Icon.plus className="h-4 w-4" />
+              New session
+            </ButtonLink>
             <ButtonLink href="/missionary/reports" variant="secondary">
+              <Icon.reports className="h-4 w-4" />
               Submit report
             </ButtonLink>
           </>
@@ -107,7 +128,12 @@ export default async function MissionaryDashboardPage() {
         {/* Needs attention */}
         <Card>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-base font-semibold text-saffron-950">Needs attention</h2>
+            <h2 className="flex items-center gap-2 text-base font-semibold text-saffron-950">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-saffron-100 text-saffron-700">
+                <Icon.heart className="h-[18px] w-[18px]" />
+              </span>
+              Needs attention
+            </h2>
             {latestSession ? (
               <span className="text-xs text-stone-500">
                 Last session: {latestSession.title} · {formatDate(latestSession.date)}
@@ -120,8 +146,9 @@ export default async function MissionaryDashboardPage() {
               little extra care will appear here.
             </p>
           ) : needsAttention.length === 0 ? (
-            <p className="text-sm text-saffron-900/80">
-              Everyone in your group is engaged this week — beautiful. Keep the kirtan going! 🪷
+            <p className="flex items-center gap-1.5 text-sm text-saffron-900/80">
+              <Icon.lotus className="h-4 w-4 shrink-0 text-saffron-600" />
+              Everyone in your group is engaged this week — beautiful. Keep the kirtan going!
             </p>
           ) : (
             <ul className="divide-y divide-saffron-900/10">
@@ -144,9 +171,10 @@ export default async function MissionaryDashboardPage() {
                   </div>
                   <Link
                     href={`/missionary/followups?devoteeId=${m.id}`}
-                    className="shrink-0 text-sm font-semibold text-saffron-700 hover:text-saffron-800 hover:underline"
+                    className="flex shrink-0 items-center gap-1 text-sm font-semibold text-saffron-700 hover:text-saffron-800 hover:underline"
                   >
-                    Log follow-up →
+                    Log follow-up
+                    <Icon.chevron className="h-4 w-4" />
                   </Link>
                 </li>
               ))}
@@ -157,7 +185,12 @@ export default async function MissionaryDashboardPage() {
         {/* Today's sadhana */}
         <Card>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-base font-semibold text-saffron-950">Today&apos;s sadhana of my group</h2>
+            <h2 className="flex items-center gap-2 text-base font-semibold text-saffron-950">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-saffron-100 text-saffron-700">
+                <Icon.sadhana className="h-[18px] w-[18px]" />
+              </span>
+              Today&apos;s sadhana of my group
+            </h2>
             <span className="text-xs text-stone-500">{formatDate(now)}</span>
           </div>
           {mentees.length === 0 ? (
@@ -176,9 +209,12 @@ export default async function MissionaryDashboardPage() {
                       {m.name}
                     </Link>
                     {logged ? (
-                      <Badge tone="green">✓ logged · {japa} rounds</Badge>
+                      <Badge tone="green">
+                        <Icon.check className="mr-1 h-3.5 w-3.5" />
+                        logged · {japa} rounds
+                      </Badge>
                     ) : (
-                      <Badge tone="gray">✗ not yet</Badge>
+                      <Badge tone="gray">not yet</Badge>
                     )}
                   </li>
                 );
@@ -188,21 +224,67 @@ export default async function MissionaryDashboardPage() {
         </Card>
       </div>
 
+      {/* Devotees seeking a counsellor */}
+      <Card className="mt-6">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-sm">
+              <Icon.apply className="h-6 w-6" />
+            </span>
+            <div>
+              <h2 className="text-base font-semibold text-saffron-950">
+                Devotees seeking a counsellor
+              </h2>
+              <p className="mt-0.5 max-w-md text-sm text-saffron-900/70">
+                These souls are practising on their own — invite them into your care.
+              </p>
+            </div>
+          </div>
+          <ButtonLink href="/missionary/invite" variant="secondary">
+            <Icon.invite className="h-4 w-4" />
+            Share your invite QR
+            <Icon.chevron className="h-4 w-4" />
+          </ButtonLink>
+        </div>
+
+        <div className="mt-4">
+          {unassigned.length === 0 ? (
+            <p className="flex items-center gap-1.5 text-sm text-saffron-900/70">
+              <Icon.check className="h-4 w-4 shrink-0 text-green-600" />
+              Every active devotee already has a counsellor. Share your invite QR to welcome new
+              souls.
+            </p>
+          ) : (
+            <ClaimUnassigned
+              devotees={unassigned.map((d) => ({
+                id: d.id,
+                name: d.name,
+                joinedAt: d.createdAt.toISOString(),
+              }))}
+            />
+          )}
+        </div>
+      </Card>
+
       {/* Quick paths */}
       <Card className="mt-6">
         <h2 className="text-base font-semibold text-saffron-950">Quick paths to serve</h2>
         <div className="mt-3 flex flex-wrap gap-2">
           <ButtonLink href="/missionary/sessions" variant="secondary">
-            📅 Hold a session
+            <Icon.sessions className="h-4 w-4" />
+            Hold a session
           </ButtonLink>
           <ButtonLink href="/missionary/followups" variant="secondary">
-            📞 Log a follow-up
+            <Icon.followups className="h-4 w-4" />
+            Log a follow-up
           </ButtonLink>
           <ButtonLink href="/missionary/reports" variant="secondary">
-            📊 Submit my report
+            <Icon.reports className="h-4 w-4" />
+            Submit my report
           </ButtonLink>
           <ButtonLink href="/missionary/group" variant="secondary">
-            🙏 See my group
+            <Icon.group className="h-4 w-4" />
+            See my group
           </ButtonLink>
         </div>
       </Card>

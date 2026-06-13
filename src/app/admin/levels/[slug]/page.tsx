@@ -5,6 +5,7 @@ import { requireRole } from "@/lib/guards";
 import { prisma } from "@/lib/db";
 import { formatDate } from "@/lib/utils";
 import { Badge, ButtonLink, Card, PageHeader, Table, Td, Th } from "@/components/ui";
+import { Icon } from "@/components/icons";
 
 type Section = { title: string; items: string[] };
 
@@ -56,7 +57,8 @@ export default async function LevelDetailPage(props: { params: Promise<{ slug: s
         subtitle={level.summary ?? undefined}
         actions={
           <ButtonLink href="/admin/levels" variant="secondary">
-            ← All levels
+            <Icon.levels className="h-4 w-4" />
+            All levels
           </ButtonLink>
         }
       />
@@ -87,9 +89,10 @@ export default async function LevelDetailPage(props: { params: Promise<{ slug: s
                   <ul className="mt-2 space-y-1.5 text-sm text-saffron-950">
                     {section.items.map((item, i) => (
                       <li key={i} className="flex gap-2">
-                        <span aria-hidden className="text-saffron-500">
-                          ❖
-                        </span>
+                        <Icon.lotus
+                          aria-hidden
+                          className="mt-0.5 h-4 w-4 shrink-0 text-saffron-500"
+                        />
                         <span>{item}</span>
                       </li>
                     ))}
@@ -207,7 +210,8 @@ function LinkifiedItem({ text }: { text: string }) {
       rel="noopener noreferrer"
       className="inline-flex items-center gap-1 font-medium text-saffron-700 underline hover:text-saffron-800"
     >
-      {label || url} <span aria-hidden>↗</span>
+      {label || url}
+      <Icon.chevron aria-hidden className="h-3.5 w-3.5 -rotate-45" />
     </a>
   );
 }

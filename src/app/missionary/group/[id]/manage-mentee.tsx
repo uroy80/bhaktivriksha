@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Field, Select, Textarea } from "@/components/ui";
+import { Icon } from "@/components/icons";
 
 type MentorOption = { id: string; name: string };
 type Action = "mentor" | "role" | "notes";
@@ -135,7 +136,8 @@ export function ManageMentee({
         {role === "DEVOTEE" ? (
           <>
             <Button onClick={promote} disabled={busy !== null}>
-              {busy === "role" ? "Appointing…" : "🌱 Appoint as missionary"}
+              <Icon.apply className="h-4 w-4" />
+              {busy === "role" ? "Appointing…" : "Appoint as missionary"}
             </Button>
             <p className="mt-1 text-xs text-stone-500">
               Ready to care for others? Appointing them lets them shepherd their own group.

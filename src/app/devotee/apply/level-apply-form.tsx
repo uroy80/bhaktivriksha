@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Field, Select, Textarea } from "@/components/ui";
+import { Icon } from "@/components/icons";
 
 export type ApplyLevelOption = {
   id: string;
@@ -66,9 +67,12 @@ export function LevelApplyForm({
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       {hasPending ? (
-        <div className="rounded-lg bg-saffron-50 px-3 py-2 text-sm text-saffron-900 ring-1 ring-saffron-300">
-          You already have a pending application. You can submit a new one after it has been
-          reviewed.
+        <div className="flex items-start gap-2 rounded-lg bg-saffron-50 px-3 py-2 text-sm text-saffron-900 ring-1 ring-saffron-300">
+          <Icon.clock className="mt-0.5 h-4 w-4 shrink-0 text-saffron-700" />
+          <span>
+            You already have a pending application. You can submit a new one after it has been
+            reviewed.
+          </span>
         </div>
       ) : null}
 
@@ -89,13 +93,17 @@ export function LevelApplyForm({
 
       {selected ? (
         <div className="rounded-lg bg-saffron-50/70 p-4 ring-1 ring-saffron-200">
-          <p className="text-sm font-semibold text-saffron-950">
+          <p className="flex items-center gap-2 text-sm font-semibold text-saffron-950">
+            <Icon.star className="h-4 w-4 shrink-0 text-saffron-600" />
             Standards for {selected.name} — what you are committing to
           </p>
           {selected.standards.length > 0 ? (
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-saffron-900">
+            <ul className="mt-2 space-y-1.5 text-sm text-saffron-900">
               {selected.standards.map((item, i) => (
-                <li key={i}>{item}</li>
+                <li key={i} className="flex items-start gap-2">
+                  <Icon.check className="mt-0.5 h-4 w-4 shrink-0 text-saffron-600" />
+                  <span>{item}</span>
+                </li>
               ))}
             </ul>
           ) : (
@@ -108,9 +116,10 @@ export function LevelApplyForm({
               href={selected.sourceUrl}
               target="_blank"
               rel="noreferrer"
-              className="mt-3 inline-block text-sm font-medium text-saffron-700 underline hover:text-saffron-800"
+              className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-saffron-700 underline hover:text-saffron-800"
             >
-              Read the full level guide on bhaktisteps.com ↗
+              Read the full level guide on bhaktisteps.com
+              <Icon.chevron className="h-3.5 w-3.5 -rotate-45" />
             </a>
           ) : null}
         </div>

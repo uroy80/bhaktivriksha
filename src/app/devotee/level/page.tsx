@@ -2,6 +2,7 @@ import { requireRole } from "@/lib/guards";
 import { prisma } from "@/lib/db";
 import { cn, formatDate } from "@/lib/utils";
 import { Badge, ButtonLink, Card, PageHeader } from "@/components/ui";
+import { Icon, type IconName } from "@/components/icons";
 
 type LevelSection = { title: string; items: string[] };
 
@@ -29,11 +30,11 @@ function splitLink(item: string): { label: string; url: string | null } {
   return m ? { label: m[1], url: m[2] } : { label: item, url: null };
 }
 
-const GROUP_ICONS: Record<string, string> = {
-  Songs: "🎵",
-  Practices: "📿",
-  Books: "📚",
-  "Additional Books": "📖",
+const GROUP_ICONS: Record<string, IconName> = {
+  Songs: "lecture",
+  Practices: "japa",
+  Books: "reading",
+  "Additional Books": "reading",
 };
 
 export default async function MyLevelPage() {
@@ -65,7 +66,7 @@ export default async function MyLevelPage() {
   return (
     <div>
       <PageHeader
-        title="My Level 🪜"
+        title="My Level"
         subtitle="Your place on the sadhana path, and what it calls you to"
       />
 
@@ -74,20 +75,25 @@ export default async function MyLevelPage() {
           {/* Hero */}
           <Card className="bg-gradient-to-br from-saffron-50 to-white p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <Badge>Level {level.order} of 5</Badge>
-                <h2 className="mt-2 text-3xl font-bold text-saffron-950">{level.name}</h2>
-                {level.summary ? (
-                  <p className="mt-2 max-w-2xl text-sm leading-relaxed text-saffron-900/80">
-                    {level.summary}
-                  </p>
-                ) : null}
-                {latestTag ? (
-                  <p className="mt-3 text-xs text-saffron-900/60">
-                    Tagged on {formatDate(latestTag.assignedAt)}
-                    {latestTag.assignedBy ? ` by ${latestTag.assignedBy.name}` : ""}
-                  </p>
-                ) : null}
+              <div className="flex items-start gap-4">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-sm">
+                  <Icon.levels className="h-7 w-7" />
+                </span>
+                <div>
+                  <Badge>Level {level.order} of 5</Badge>
+                  <h2 className="mt-2 text-3xl font-bold text-saffron-950">{level.name}</h2>
+                  {level.summary ? (
+                    <p className="mt-2 max-w-2xl text-sm leading-relaxed text-saffron-900/80">
+                      {level.summary}
+                    </p>
+                  ) : null}
+                  {latestTag ? (
+                    <p className="mt-3 text-xs text-saffron-900/60">
+                      Tagged on {formatDate(latestTag.assignedAt)}
+                      {latestTag.assignedBy ? ` by ${latestTag.assignedBy.name}` : ""}
+                    </p>
+                  ) : null}
+                </div>
               </div>
               <div className="flex items-center gap-2 pt-1">
                 {[1, 2, 3, 4, 5].map((i) => (
@@ -106,7 +112,12 @@ export default async function MyLevelPage() {
           {/* Standards */}
           {standards && standards.items.length > 0 ? (
             <section className="mt-6">
-              <h3 className="mb-3 text-lg font-semibold text-saffron-950">🕉️ Standards</h3>
+              <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-saffron-950">
+                <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-saffron-100 text-saffron-700">
+                  <Icon.star className="h-4 w-4" />
+                </span>
+                Standards
+              </h3>
               <Card>
                 <ol className="space-y-3">
                   {standards.items.map((item, i) => (
@@ -125,14 +136,23 @@ export default async function MyLevelPage() {
           {/* Recommended groups */}
           {recommended.length > 0 ? (
             <section className="mt-6">
-              <h3 className="mb-3 text-lg font-semibold text-saffron-950">🌼 Recommended</h3>
+              <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-saffron-950">
+                <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-saffron-100 text-saffron-700">
+                  <Icon.lotus className="h-4 w-4" />
+                </span>
+                Recommended
+              </h3>
               <div className="grid gap-4 md:grid-cols-2">
                 {recommended.map((group) => {
                   const name = group.title.replace("Recommended - ", "");
+                  const GroupIcon = Icon[GROUP_ICONS[name] ?? "lotus"];
                   return (
                     <Card key={group.title}>
-                      <p className="mb-3 text-sm font-semibold text-saffron-900">
-                        {GROUP_ICONS[name] ?? "🌿"} {name}
+                      <p className="mb-3 flex items-center gap-2 text-sm font-semibold text-saffron-900">
+                        <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-saffron-100 text-saffron-700">
+                          <GroupIcon className="h-4 w-4" />
+                        </span>
+                        {name}
                       </p>
                       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                         {group.items.map((item, i) => (
@@ -154,12 +174,18 @@ export default async function MyLevelPage() {
           {/* Application / Certificates links */}
           {linkSections.length > 0 ? (
             <section className="mt-6">
-              <h3 className="mb-3 text-lg font-semibold text-saffron-950">📄 Forms &amp; certificates</h3>
+              <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-saffron-950">
+                <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-saffron-100 text-saffron-700">
+                  <Icon.applications className="h-4 w-4" />
+                </span>
+                Forms &amp; certificates
+              </h3>
               <Card>
                 <div className="flex flex-wrap gap-3">
                   {linkSections.flatMap((s) =>
                     s.items.map((item, i) => {
                       const { label, url } = splitLink(item);
+                      const LinkIcon = s.title === "Certificates" ? Icon.star : Icon.apply;
                       return url ? (
                         <a
                           key={`${s.title}-${i}`}
@@ -168,7 +194,8 @@ export default async function MyLevelPage() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-saffron-800 ring-1 ring-saffron-300 transition-colors hover:bg-saffron-50"
                         >
-                          {s.title === "Certificates" ? "🏅" : "📝"} {label} ↗
+                          <LinkIcon className="h-4 w-4" /> {label}
+                          <Icon.chevron className="h-4 w-4 -rotate-45" />
                         </a>
                       ) : (
                         <span key={`${s.title}-${i}`} className="text-sm text-saffron-950">
@@ -185,9 +212,10 @@ export default async function MyLevelPage() {
                       href={level.sourceUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-medium text-saffron-700 underline hover:text-saffron-800"
+                      className="inline-flex items-center gap-0.5 font-medium text-saffron-700 underline hover:text-saffron-800"
                     >
-                      bhaktisteps.com ↗
+                      bhaktisteps.com
+                      <Icon.chevron className="h-3.5 w-3.5 -rotate-45" />
                     </a>
                   </p>
                 ) : null}
@@ -198,8 +226,10 @@ export default async function MyLevelPage() {
       ) : (
         /* No level yet */
         <Card className="bg-gradient-to-br from-saffron-50 to-white p-8 text-center">
-          <p className="text-3xl">🌱</p>
-          <h2 className="mt-2 text-xl font-bold text-saffron-950">
+          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-sm">
+            <Icon.lotus className="h-8 w-8" />
+          </span>
+          <h2 className="mt-3 text-xl font-bold text-saffron-950">
             Your journey is just beginning
           </h2>
           <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-saffron-900/70">
@@ -211,7 +241,8 @@ export default async function MyLevelPage() {
           </p>
           <div className="mt-4">
             <ButtonLink href="/devotee/sadhana" variant="secondary">
-              Start your sadhana journal 📿
+              <Icon.japa className="h-4 w-4" />
+              Start your sadhana journal
             </ButtonLink>
           </div>
         </Card>
@@ -219,7 +250,12 @@ export default async function MyLevelPage() {
 
       {/* The full path */}
       <section className="mt-8">
-        <h3 className="mb-3 text-lg font-semibold text-saffron-950">🛤️ The full path</h3>
+        <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-saffron-950">
+          <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-saffron-100 text-saffron-700">
+            <Icon.levels className="h-4 w-4" />
+          </span>
+          The full path
+        </h3>
         <div className="space-y-0">
           {allLevels.map((l, idx) => {
             const mine = level?.id === l.id;
@@ -238,7 +274,7 @@ export default async function MyLevelPage() {
                           : "bg-white text-saffron-400 ring-saffron-200",
                     )}
                   >
-                    {completed ? "✓" : l.order}
+                    {completed ? <Icon.check className="h-5 w-5" /> : l.order}
                   </span>
                   {idx < allLevels.length - 1 ? (
                     <span
@@ -280,7 +316,12 @@ export default async function MyLevelPage() {
       {/* Level history timeline */}
       {history.length > 0 ? (
         <section className="mt-8">
-          <h3 className="mb-3 text-lg font-semibold text-saffron-950">📜 My level history</h3>
+          <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-saffron-950">
+            <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-saffron-100 text-saffron-700">
+              <Icon.clock className="h-4 w-4" />
+            </span>
+            My level history
+          </h3>
           <Card>
             <ul className="space-y-4">
               {history.map((h, idx) => (

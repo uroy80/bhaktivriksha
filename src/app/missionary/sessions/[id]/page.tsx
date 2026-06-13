@@ -5,6 +5,7 @@ import { requireRole } from "@/lib/guards";
 import { canAccessUser } from "@/lib/hierarchy";
 import { formatDateTime } from "@/lib/utils";
 import { Badge, ButtonLink, Card, EmptyState, PageHeader } from "@/components/ui";
+import { Icon } from "@/components/icons";
 import { AttendanceRow } from "../attendance-row";
 
 const typeLabel = { SATSANGA: "Satsanga", CLASS: "Class", OTHER: "Other" } as const;
@@ -76,9 +77,11 @@ export default async function SessionAttendancePage(props: {
         actions={
           <>
             <ButtonLink href={`/api/sessions/${session.id}/export`} variant="secondary">
+              <Icon.download className="h-4 w-4" />
               Download CSV
             </ButtonLink>
             <ButtonLink href="/missionary/register" variant="ghost">
+              <Icon.attendance className="h-4 w-4" />
               Open register view
             </ButtonLink>
           </>
@@ -146,17 +149,19 @@ export default async function SessionAttendancePage(props: {
                     <span className="min-w-0 truncate text-sm text-saffron-950">{r.name}</span>
                     <Link
                       href={`/missionary/followups?devoteeId=${r.id}&sessionId=${session.id}`}
-                      className="shrink-0 text-sm font-medium text-saffron-700 underline-offset-2 hover:underline"
+                      className="flex shrink-0 items-center gap-1 text-sm font-medium text-saffron-700 underline-offset-2 hover:underline"
                     >
-                      Log follow-up →
+                      Log follow-up
+                      <Icon.chevron className="h-4 w-4" />
                     </Link>
                   </li>
                 ))}
               </ul>
             </Card>
           ) : (
-            <p className="mt-2 text-center text-xs text-green-700">
-              Full house — everyone is present. 🙏
+            <p className="mt-2 flex items-center justify-center gap-1.5 text-center text-xs text-green-700">
+              <Icon.check className="h-4 w-4" />
+              Full house — everyone is present.
             </p>
           )}
         </>

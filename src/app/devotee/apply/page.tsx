@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/guards";
 import { formatDate, formatDateTime } from "@/lib/utils";
 import { Badge, Card, EmptyState, PageHeader } from "@/components/ui";
+import { Icon } from "@/components/icons";
 import { LevelApplyForm, type ApplyLevelOption } from "./level-apply-form";
 
 function extractStandards(sections: unknown): string[] {
@@ -59,7 +60,12 @@ export default async function DevoteeApplyPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         {/* How advancement works */}
         <Card>
-          <h2 className="font-semibold text-saffron-950">How advancement works</h2>
+          <h2 className="flex items-center gap-2 font-semibold text-saffron-950">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-saffron-100 text-saffron-700">
+              <Icon.apply className="h-5 w-5" />
+            </span>
+            How advancement works
+          </h2>
           <p className="mt-2 text-sm text-saffron-900/80">
             Each sadhana level comes with standards of practice. Advancement is not a formality —
             the standards must already be a living part of your daily sadhana before you apply.
@@ -91,9 +97,10 @@ export default async function DevoteeApplyPage() {
                       href={l.sourceUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="font-medium text-saffron-800 underline hover:text-saffron-900"
+                      className="inline-flex items-center gap-0.5 font-medium text-saffron-800 underline hover:text-saffron-900"
                     >
                       {l.name}
+                      <Icon.chevron className="h-3.5 w-3.5 -rotate-45 no-underline" />
                     </a>
                   ) : (
                     <span className="font-medium text-saffron-950">{l.name}</span>
@@ -114,7 +121,12 @@ export default async function DevoteeApplyPage() {
 
         {/* Apply form */}
         <Card>
-          <h2 className="mb-4 font-semibold text-saffron-950">Apply for a different level</h2>
+          <h2 className="mb-4 flex items-center gap-2 font-semibold text-saffron-950">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-saffron-100 text-saffron-700">
+              <Icon.levels className="h-5 w-5" />
+            </span>
+            Apply for a different level
+          </h2>
           <LevelApplyForm
             levels={formLevels}
             currentLevelId={user.sadhanaLevelId}
@@ -124,7 +136,12 @@ export default async function DevoteeApplyPage() {
       </div>
 
       {/* History */}
-      <h2 className="mt-8 mb-3 text-lg font-semibold text-saffron-950">My applications</h2>
+      <h2 className="mt-8 mb-3 flex items-center gap-2 text-lg font-semibold text-saffron-950">
+        <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-saffron-100 text-saffron-700">
+          <Icon.applications className="h-4 w-4" />
+        </span>
+        My applications
+      </h2>
       {applications.length === 0 ? (
         <EmptyState
           title="No applications yet"
@@ -140,7 +157,13 @@ export default async function DevoteeApplyPage() {
                     <Badge tone="blue">Joining application</Badge>
                   ) : (
                     <Badge tone="saffron">
-                      Level change{app.level ? ` → ${app.level.name}` : ""}
+                      Level change
+                      {app.level ? (
+                        <>
+                          <Icon.chevron className="mx-0.5 h-3 w-3" />
+                          {app.level.name}
+                        </>
+                      ) : null}
                     </Badge>
                   )}
                   <Badge tone={statusTone(app.status)}>{app.status}</Badge>

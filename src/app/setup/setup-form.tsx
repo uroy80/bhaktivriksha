@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button, ButtonLink, Field, Input } from "@/components/ui";
+import { Icon } from "@/components/icons";
 
 export function SetupForm() {
   const [name, setName] = useState("");
@@ -39,7 +40,9 @@ export function SetupForm() {
   if (done) {
     return (
       <div className="text-center">
-        <span className="text-3xl">🎉</span>
+        <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-700">
+          <Icon.check className="h-6 w-6" />
+        </span>
         <h2 className="mt-3 text-lg font-bold text-saffron-950">Administrator created</h2>
         <p className="mt-2 text-sm text-saffron-900/70">
           The temple is ready. Sign in with your new admin account to begin.

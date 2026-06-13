@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Card, Input, Select, Textarea } from "@/components/ui";
+import { Icon } from "@/components/icons";
 
 type LevelOption = { id: string; name: string; order: number };
 type MentorOption = { id: string; name: string; role: "ADMIN" | "MISSIONARY" };
@@ -91,7 +92,12 @@ export function ManageDevotee({
 
   return (
     <Card>
-      <h2 className="mb-1 text-base font-semibold text-saffron-950">Manage Devotee</h2>
+      <div className="mb-1 flex items-center gap-2">
+        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-sm">
+          <Icon.claim className="h-[18px] w-[18px]" />
+        </span>
+        <h2 className="text-base font-semibold text-saffron-950">Manage Devotee</h2>
+      </div>
       <p className="mb-4 text-xs text-stone-500">Admin actions — every level change is audited.</p>
 
       <div className="space-y-4">

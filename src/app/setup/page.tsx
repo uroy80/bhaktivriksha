@@ -3,6 +3,8 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { prisma } from "@/lib/db";
 import { ButtonLink, Card } from "@/components/ui";
+import { LotusMark } from "@/components/icons";
+import { Lock } from "lucide-react";
 import { SetupForm } from "./setup-form";
 
 export const metadata: Metadata = { title: "One-time setup" };
@@ -14,14 +16,18 @@ export default async function SetupPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-saffron-100 to-cream px-4 py-10">
       <Link href="/" className="mb-6 flex items-center gap-2">
-        <span className="text-3xl">🪷</span>
+        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-md">
+          <LotusMark className="h-6 w-6" />
+        </span>
         <span className="text-xl font-bold text-saffron-900">Sadhana Companion</span>
       </Link>
 
       <Card className="w-full max-w-md p-6 sm:p-8">
         {adminExists ? (
           <div className="text-center">
-            <span className="text-3xl">🔒</span>
+            <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-saffron-100 text-saffron-700">
+              <Lock className="h-6 w-6" />
+            </span>
             <h1 className="mt-3 text-xl font-bold text-saffron-950">Admin already exists</h1>
             <p className="mt-2 text-sm text-saffron-900/70">
               This temple has already been set up. Please sign in with your account instead.

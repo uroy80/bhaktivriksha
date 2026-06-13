@@ -15,6 +15,7 @@ import {
   Td,
   Th,
 } from "@/components/ui";
+import { Icon } from "@/components/icons";
 import {
   devoteeWhere,
   filtersToQueryString,
@@ -67,10 +68,35 @@ export default async function DevoteesDirectoryPage(props: {
         subtitle={`${users.length} ${users.length === 1 ? "person" : "people"} matching the current filters.`}
         actions={
           <ButtonLink href={exportHref} variant="secondary">
-            ⬇ Download CSV
+            <Icon.download className="h-4 w-4" />
+            Download CSV
           </ButtonLink>
         }
       />
+
+      {/* Quick views */}
+      <div className="mb-4 flex flex-wrap gap-2">
+        <ButtonLink href="/admin/devotees" variant="ghost" className="text-xs">
+          <Icon.devotees className="h-4 w-4" />
+          Everyone
+        </ButtonLink>
+        <ButtonLink
+          href="/admin/devotees?role=DEVOTEE&status=ACTIVE"
+          variant="ghost"
+          className="text-xs"
+        >
+          <Icon.claim className="h-4 w-4" />
+          Active devotees
+        </ButtonLink>
+        <ButtonLink
+          href="/admin/devotees?role=MISSIONARY&status=ACTIVE"
+          variant="ghost"
+          className="text-xs"
+        >
+          <Icon.group className="h-4 w-4" />
+          Missionaries
+        </ButtonLink>
+      </div>
 
       {/* GET-form filters: submits back to this page via the query string */}
       <form
@@ -179,6 +205,8 @@ export default async function DevoteesDirectoryPage(props: {
                     >
                       {u.mentor.name}
                     </Link>
+                  ) : u.role === "DEVOTEE" ? (
+                    <Badge tone="red">No mentor</Badge>
                   ) : (
                     <span className="text-stone-400">—</span>
                   )}

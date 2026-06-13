@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { Icon } from "@/components/icons";
 
 /**
  * Slide-to-mark attendance control.
@@ -156,11 +157,18 @@ export function SlideToMark({
         {/* Track label, kept clear of the thumb */}
         <span
           className={cn(
-            "pointer-events-none absolute inset-0 flex items-center justify-center text-xs font-semibold tracking-wide transition-colors duration-300",
+            "pointer-events-none absolute inset-0 flex items-center justify-center gap-1 text-xs font-semibold tracking-wide transition-colors duration-300",
             present ? "pr-7 text-white" : "pl-7 text-stone-500",
           )}
         >
-          {present ? "Present ✓" : "Absent"}
+          {present ? (
+            <>
+              Present
+              <Icon.check className="h-3.5 w-3.5" />
+            </>
+          ) : (
+            "Absent"
+          )}
         </span>
 
         {/* Thumb */}
@@ -176,7 +184,11 @@ export function SlideToMark({
           )}
           style={dragging ? { left: PAD + dragPos } : undefined}
         >
-          {present ? "✓" : "›"}
+          {present ? (
+            <Icon.check className="h-4 w-4" strokeWidth={3} />
+          ) : (
+            <Icon.chevron className="h-4 w-4" strokeWidth={3} />
+          )}
         </span>
       </div>
       {error ? <p className="max-w-40 text-right text-xs text-maroon-700">{error}</p> : null}

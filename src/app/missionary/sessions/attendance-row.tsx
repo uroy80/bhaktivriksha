@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge, Button, Input } from "@/components/ui";
+import { Icon } from "@/components/icons";
 import { SlideToMark } from "./slide-to-mark";
 
 /**
@@ -117,7 +118,10 @@ export function AttendanceRow({
             {saving ? "Saving…" : "Save"}
           </Button>
         ) : saved ? (
-          <span className="shrink-0 text-xs font-medium text-green-700">Saved ✓</span>
+          <span className="flex shrink-0 items-center gap-1 text-xs font-medium text-green-700">
+            <Icon.check className="h-3.5 w-3.5" />
+            Saved
+          </span>
         ) : null}
       </div>
       {error ? <p className="mt-1 text-xs text-maroon-700">{error}</p> : null}

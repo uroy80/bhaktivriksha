@@ -64,3 +64,30 @@ export function monthAggregates(
       : Math.round((monthEntries.reduce((s, e) => s + e.japaRounds, 0) / daysLogged) * 10) / 10;
   return { daysLogged, avgJapa };
 }
+
+/**
+ * Average chanting quality (1..10) for the month containing `todayKey`,
+ * counting only days the devotee actually rated. Returns `{ avg: null, rated: 0 }`
+ * when nothing was rated, so the UI can show a gentle "—" instead of a misleading 0.
+ */
+export function monthChantingQuality(
+  entries: { date: Date; chantingQuality: number | null }[],
+  todayKey: string,
+): { avg: number | null; rated: number } {
+  const prefix = todayKey.slice(0, 7); // YYYY-MM
+  const rated = entries.filter(
+    (e) => e.chantingQuality != null && entryDateKey(e.date).startsWith(prefix),
+  );
+  if (rated.length === 0) return { avg: null, rated: 0 };
+  const sum = rated.reduce((s, e) => s + (e.chantingQuality ?? 0), 0);
+  return { avg: Math.round((sum / rated.length) * 10) / 10, rated: rated.length };
+}
+
+/** The reflective word for a chanting-quality value (1..10). */
+export function chantingQualityWord(q: number): string {
+  if (q <= 2) return "Distracted";
+  if (q <= 4) return "Struggling";
+  if (q <= 6) return "Attentive";
+  if (q <= 8) return "Absorbed";
+  return "Blissful";
+}

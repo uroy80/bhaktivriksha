@@ -14,9 +14,15 @@ import {
   Td,
   Th,
 } from "@/components/ui";
+import { Icon, type IconName } from "@/components/icons";
 
 const typeLabel = { SATSANGA: "Satsanga", CLASS: "Class", OTHER: "Other" } as const;
 const typeTone = { SATSANGA: "saffron", CLASS: "blue", OTHER: "gray" } as const;
+const typeIcon: Record<"SATSANGA" | "CLASS" | "OTHER", IconName> = {
+  SATSANGA: "lotus",
+  CLASS: "reading",
+  OTHER: "sessions",
+};
 
 // Admin read-only view of a session's attendance register.
 export default async function AdminSessionDetailPage(props: {
@@ -41,6 +47,7 @@ export default async function AdminSessionDetailPage(props: {
   if (!session) notFound();
 
   const presentCount = session.attendances.filter((a) => a.present).length;
+  const TypeIcon = Icon[typeIcon[session.type]];
 
   return (
     <div>
@@ -49,13 +56,17 @@ export default async function AdminSessionDetailPage(props: {
         subtitle={`${formatDateTime(session.date)}${session.location ? ` · ${session.location}` : ""}`}
         actions={
           <ButtonLink href={`/api/sessions/${session.id}/export`} variant="secondary">
+            <Icon.download className="h-4 w-4" />
             Download CSV
           </ButtonLink>
         }
       />
 
       <div className="mb-4 flex flex-wrap items-center gap-2 text-sm text-saffron-900/70">
-        <Badge tone={typeTone[session.type]}>{typeLabel[session.type]}</Badge>
+        <Badge tone={typeTone[session.type]}>
+          <TypeIcon className="mr-1 h-3.5 w-3.5" />
+          {typeLabel[session.type]}
+        </Badge>
         <span>
           Conducted by{" "}
           <span className="font-medium text-saffron-950">{session.conductedBy.name}</span>
@@ -120,9 +131,10 @@ export default async function AdminSessionDetailPage(props: {
       <div className="mt-6">
         <Link
           href="/admin/sessions"
-          className="text-sm text-saffron-900/60 underline-offset-2 hover:underline"
+          className="inline-flex items-center gap-1 text-sm text-saffron-900/60 underline-offset-2 hover:underline"
         >
-          ← All sessions
+          <Icon.sessions className="h-4 w-4" />
+          All sessions
         </Link>
       </div>
     </div>

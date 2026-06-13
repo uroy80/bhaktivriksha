@@ -62,9 +62,14 @@ model User {
   phone        String?
   whatsapp     String?
   address      String?
-  passwordHash String
+  image        String? // profile photo (e.g. from Google, when OAuth is enabled later)
+  passwordHash String? // optional: OAuth-only users have no password
   role         Role       @default(DEVOTEE)
   status       UserStatus @default(PENDING)
+
+  // Shareable QR/invite token — present on missionaries. A devotee who opens
+  // /join/<token> is assigned under that missionary.
+  inviteToken String? @unique
 
   // The milkyway tree: who this person reports to / is cared for by.
   mentorId String?
@@ -211,12 +216,13 @@ model SadhanaEntry {
   userId         String
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   date           DateTime @db.Date
-  japaRounds     Int      @default(0)
-  readingMinutes Int      @default(0)
-  mangalArati    Boolean  @default(false)
-  eveningArati   Boolean  @default(false)
-  lectureHeard   Boolean  @default(false)
-  notes          String?
+  japaRounds      Int      @default(0)
+  chantingQuality Int? // self-rated 1 (distracted) .. 10 (blissful)
+  readingMinutes  Int      @default(0)
+  mangalArati     Boolean  @default(false)
+  eveningArati    Boolean  @default(false)
+  lectureHeard    Boolean  @default(false)
+  notes           String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 

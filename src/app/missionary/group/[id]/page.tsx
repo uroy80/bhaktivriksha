@@ -5,13 +5,9 @@ import { prisma } from "@/lib/db";
 import { canAccessUser, getSubtreeIds } from "@/lib/hierarchy";
 import { formatDate, formatDateTime, toDateKey } from "@/lib/utils";
 import { Badge, Card, EmptyState, PageHeader } from "@/components/ui";
+import { Icon, channelMeta } from "@/components/icons";
 import { startOfDaysAgo } from "../group-data";
 import { ManageMentee } from "./manage-mentee";
-
-function channelLabel(channel: string): string {
-  const s = channel.replace(/_/g, " ").toLowerCase();
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
 
 function waLink(phone: string): string {
   return `https://wa.me/${phone.replace(/\D/g, "")}`;
@@ -146,9 +142,10 @@ export default async function MenteeDetailPage(props: { params: Promise<{ id: st
         actions={
           <Link
             href={`/missionary/followups?devoteeId=${mentee.id}`}
-            className="text-sm font-semibold text-saffron-700 hover:text-saffron-800 hover:underline"
+            className="flex items-center gap-1 text-sm font-semibold text-saffron-700 hover:text-saffron-800 hover:underline"
           >
-            Log follow-up →
+            Log follow-up
+            <Icon.chevron className="h-4 w-4" />
           </Link>
         }
       />
@@ -352,9 +349,10 @@ export default async function MenteeDetailPage(props: { params: Promise<{ id: st
               <h2 className="text-base font-semibold text-saffron-950">Follow-ups received (last 10)</h2>
               <Link
                 href={`/missionary/followups?devoteeId=${mentee.id}`}
-                className="text-sm font-semibold text-saffron-700 hover:text-saffron-800 hover:underline"
+                className="flex items-center gap-1 text-sm font-semibold text-saffron-700 hover:text-saffron-800 hover:underline"
               >
-                Log follow-up →
+                Log follow-up
+                <Icon.chevron className="h-4 w-4" />
               </Link>
             </div>
             {followUps.length === 0 ? (
@@ -363,10 +361,16 @@ export default async function MenteeDetailPage(props: { params: Promise<{ id: st
               </p>
             ) : (
               <ul className="divide-y divide-saffron-900/10">
-                {followUps.map((f) => (
+                {followUps.map((f) => {
+                  const meta = channelMeta[f.channel] ?? channelMeta.OTHER;
+                  const ChannelIcon = meta.icon;
+                  return (
                   <li key={f.id} className="py-2">
                     <div className="flex flex-wrap items-center gap-2">
-                      <Badge tone="blue">{channelLabel(f.channel)}</Badge>
+                      <Badge tone="blue">
+                        <ChannelIcon className="mr-1 h-3.5 w-3.5" />
+                        {meta.label}
+                      </Badge>
                       <span className="text-xs text-stone-500">
                         {formatDateTime(f.occurredAt)} · by {f.by.name}
                         {f.session ? <> · re: {f.session.title}</> : null}
@@ -375,7 +379,8 @@ export default async function MenteeDetailPage(props: { params: Promise<{ id: st
                     {f.outcome ? <p className="mt-1 text-sm text-saffron-950">{f.outcome}</p> : null}
                     {f.notes ? <p className="mt-0.5 text-xs text-saffron-900/70">{f.notes}</p> : null}
                   </li>
-                ))}
+                  );
+                })}
               </ul>
             )}
           </Card>

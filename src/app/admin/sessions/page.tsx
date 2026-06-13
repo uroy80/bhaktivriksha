@@ -17,9 +17,15 @@ import {
   Td,
   Th,
 } from "@/components/ui";
+import { Icon, type IconName } from "@/components/icons";
 
 const typeTone = { SATSANGA: "saffron", CLASS: "blue", OTHER: "gray" } as const;
 const typeLabel = { SATSANGA: "Satsanga", CLASS: "Class", OTHER: "Other" } as const;
+const typeIcon: Record<"SATSANGA" | "CLASS" | "OTHER", IconName> = {
+  SATSANGA: "lotus",
+  CLASS: "reading",
+  OTHER: "sessions",
+};
 
 export default async function AdminSessionsPage(props: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -114,6 +120,7 @@ export default async function AdminSessionsPage(props: {
           <tbody className="divide-y divide-saffron-900/5">
             {sessions.map((s) => {
               const present = s.attendances.filter((a) => a.present).length;
+              const TypeIcon = Icon[typeIcon[s.type]];
               return (
                 <tr key={s.id} className="hover:bg-saffron-50/60">
                   <Td className="whitespace-nowrap">{formatDateTime(s.date)}</Td>
@@ -126,7 +133,10 @@ export default async function AdminSessionsPage(props: {
                     </Link>
                   </Td>
                   <Td>
-                    <Badge tone={typeTone[s.type]}>{typeLabel[s.type]}</Badge>
+                    <Badge tone={typeTone[s.type]}>
+                      <TypeIcon className="mr-1 h-3.5 w-3.5" />
+                      {typeLabel[s.type]}
+                    </Badge>
                   </Td>
                   <Td className="whitespace-nowrap">{s.conductedBy.name}</Td>
                   <Td className="whitespace-nowrap text-right font-medium">

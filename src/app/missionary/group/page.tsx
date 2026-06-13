@@ -3,6 +3,7 @@ import { requireRole } from "@/lib/guards";
 import { getDescendantIds } from "@/lib/hierarchy";
 import { formatDate, toDateKey } from "@/lib/utils";
 import { Badge, ButtonLink, Card, EmptyState, PageHeader, Table, Td, Th } from "@/components/ui";
+import { Icon } from "@/components/icons";
 import { getGroupRows, startOfDaysAgo } from "./group-data";
 
 export default async function MyGroupPage() {
@@ -23,7 +24,12 @@ export default async function MyGroupPage() {
       <PageHeader
         title="My group"
         subtitle="The devotees and missionaries directly under your care."
-        actions={<ButtonLink href="/api/missionary/group/export" variant="secondary">⬇ Download CSV</ButtonLink>}
+        actions={
+          <ButtonLink href="/api/missionary/group/export" variant="secondary">
+            <Icon.download className="h-4 w-4" />
+            Download CSV
+          </ButtonLink>
+        }
       />
 
       {rows.length === 0 ? (

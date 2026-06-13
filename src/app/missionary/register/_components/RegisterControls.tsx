@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Button, Input } from "@/components/ui";
+import { Icon } from "@/components/icons";
 
 export function RegisterControls({ month }: { month: string }) {
   const router = useRouter();
@@ -18,6 +19,7 @@ export function RegisterControls({ month }: { month: string }) {
         }}
       />
       <Button type="button" variant="secondary" onClick={() => window.print()}>
+        <Icon.download className="h-4 w-4" />
         Print / Save PDF
       </Button>
     </div>

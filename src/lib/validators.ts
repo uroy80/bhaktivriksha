@@ -31,6 +31,25 @@ export const applySchema = z.object({
   message: z.string().trim().max(2000).optional(),
 });
 
+// Open self-registration — instant ACTIVE devotee, no missionary required.
+export const registerSchema = z.object({
+  name: z.string().trim().min(2, "Name is required"),
+  email: emailSchema,
+  password: passwordSchema,
+  phone: phoneSchema,
+  whatsapp: phoneSchema,
+  // optional invite token captured from a missionary's QR/link
+  joinToken: z.string().trim().min(1).max(64).optional(),
+});
+
+export const joinSchema = z.object({
+  token: z.string().trim().min(1, "Missing invite").max(64),
+});
+
+export const claimSchema = z.object({
+  devoteeId: z.string().min(1),
+});
+
 export const levelApplySchema = z.object({
   levelId: z.string().min(1, "Choose a level"),
   message: z.string().trim().max(2000).optional(),
@@ -96,6 +115,7 @@ export const sadhanaEntrySchema = z.object({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be YYYY-MM-DD"),
   japaRounds: z.coerce.number().int().min(0).max(192).default(0),
+  chantingQuality: z.coerce.number().int().min(1).max(10).optional().nullable(),
   readingMinutes: z.coerce.number().int().min(0).max(1440).default(0),
   mangalArati: z.coerce.boolean().default(false),
   eveningArati: z.coerce.boolean().default(false),

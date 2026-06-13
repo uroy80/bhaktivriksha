@@ -11,14 +11,18 @@ export const CHANNEL_VALUES = [
   "OTHER",
 ] as const satisfies readonly FollowUpChannel[];
 
-/** Friendly labels with icons — used in the form select and table badges. */
+/**
+ * Friendly labels — used in the form <select> (options can't hold an icon
+ * component) and as the visible text on table badges, which pair these with
+ * the matching channelMeta icon. Kept in sync with channelMeta in icons.tsx.
+ */
 export const CHANNEL_LABELS: Record<FollowUpChannel, string> = {
-  PHONE_CALL: "📞 Phone call",
-  WHATSAPP: "💬 WhatsApp",
-  EMAIL: "✉️ Email",
-  SMS: "📱 SMS",
-  HOME_VISIT: "🏠 Home visit",
-  IN_PERSON: "🤝 In person",
+  PHONE_CALL: "Phone call",
+  WHATSAPP: "WhatsApp",
+  EMAIL: "Email",
+  SMS: "SMS",
+  HOME_VISIT: "Home visit",
+  IN_PERSON: "In person",
   OTHER: "Other",
 };
 

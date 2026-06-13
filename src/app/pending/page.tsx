@@ -5,6 +5,7 @@ import { signOut } from "@/auth";
 import { prisma } from "@/lib/db";
 import { homeFor, requireUser } from "@/lib/guards";
 import { Badge, Button, Card } from "@/components/ui";
+import { Icon, LotusMark } from "@/components/icons";
 import { formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Application under review" };
@@ -24,12 +25,16 @@ export default async function PendingPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-saffron-100 to-cream px-4 py-10">
       <Link href="/" className="mb-6 flex items-center gap-2">
-        <span className="text-3xl">🪷</span>
+        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-saffron-400 to-saffron-600 text-white shadow-md">
+          <LotusMark className="h-6 w-6" />
+        </span>
         <span className="text-xl font-bold text-saffron-900">Sadhana Companion</span>
       </Link>
 
       <Card className="w-full max-w-md p-6 text-center sm:p-8">
-        <span className="text-4xl">🙏</span>
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-saffron-100 text-saffron-700">
+          <Icon.clock className="h-7 w-7" />
+        </span>
         <h1 className="mt-3 text-xl font-bold text-saffron-950">
           Hare Krishna, {user.name}
         </h1>
