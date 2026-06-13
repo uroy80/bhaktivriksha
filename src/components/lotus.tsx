@@ -31,3 +31,17 @@ export function LotusHero({ className }: { className?: string }) {
     />
   );
 }
+
+/** The hand-painted lotus FLOWER (leaf cropped away) — used as a pedestal. */
+export function LotusFlower({ className }: { className?: string }) {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/devotional/lotus-flower.png"
+      alt=""
+      aria-hidden
+      className={cn("pointer-events-none select-none object-contain", className)}
+      draggable={false}
+    />
+  );
+}
