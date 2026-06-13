@@ -33,7 +33,7 @@ export default async function RegisterPage(props: {
 
   const levels = await prisma.sadhanaLevel.findMany({
     orderBy: { order: "asc" },
-    select: { id: true, order: true, name: true },
+    select: { id: true, order: true, name: true, slug: true },
   });
 
   return (
@@ -82,13 +82,20 @@ export default async function RegisterPage(props: {
             {levels.length > 0 ? (
               <Card>
                 <h2 className="font-semibold text-saffron-950">The path</h2>
-                <ul className="mt-3 space-y-2">
+                <p className="mt-1 text-xs text-saffron-900/60">Tap a level to read its standards.</p>
+                <ul className="mt-3 space-y-1">
                   {levels.map((level) => (
-                    <li key={level.id} className="flex items-center gap-2 text-sm text-saffron-950">
-                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-saffron-100 text-[11px] font-bold text-saffron-800 ring-1 ring-saffron-300">
-                        {level.order}
-                      </span>
-                      {level.name}
+                    <li key={level.id}>
+                      <Link
+                        href={`/levels/${level.slug}`}
+                        className="group flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-saffron-950 hover:bg-saffron-50"
+                      >
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-saffron-100 text-[11px] font-bold text-saffron-800 ring-1 ring-saffron-300">
+                          {level.order}
+                        </span>
+                        {level.name}
+                        <Icon.chevron className="ml-auto h-4 w-4 text-saffron-400 transition-transform group-hover:translate-x-0.5" />
+                      </Link>
                     </li>
                   ))}
                 </ul>

@@ -117,12 +117,20 @@ export default async function LandingPage() {
 
         {/* The five-level ladder */}
         <section className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
-          <div className="max-w-2xl">
-            <h2 className="text-2xl font-bold text-saffron-950 sm:text-3xl">The sadhana ladder</h2>
-            <p className="mt-2 text-saffron-900/70">
-              Five levels of steady spiritual progress, from first faith to full shelter. Each
-              level has clear standards, recommended practices and books.
-            </p>
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div className="max-w-2xl">
+              <h2 className="text-2xl font-bold text-saffron-950 sm:text-3xl">The sadhana ladder</h2>
+              <p className="mt-2 text-saffron-900/70">
+                Five levels of steady spiritual progress, from first faith to full shelter. Tap a
+                level to read its standards and recommended practices.
+              </p>
+            </div>
+            {levels.length > 0 ? (
+              <ButtonLink href="/levels" variant="secondary">
+                Explore all levels
+                <Icon.chevron className="h-4 w-4" />
+              </ButtonLink>
+            ) : null}
           </div>
 
           {levels.length === 0 ? (
@@ -144,12 +152,20 @@ export default async function LandingPage() {
                   >
                     {level.order}
                   </span>
-                  <Card className="flex-1">
-                    <h3 className="font-semibold text-saffron-950">{level.name}</h3>
-                    {level.summary ? (
-                      <p className="mt-1 text-sm leading-6 text-saffron-900/70">{level.summary}</p>
-                    ) : null}
-                  </Card>
+                  <Link href={`/levels/${level.slug}`} className="group flex-1">
+                    <Card className="transition-shadow group-hover:shadow-md group-hover:ring-saffron-300">
+                      <div className="flex items-center justify-between gap-3">
+                        <h3 className="font-semibold text-saffron-950">{level.name}</h3>
+                        <span className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-saffron-700">
+                          Standards
+                          <Icon.chevron className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                        </span>
+                      </div>
+                      {level.summary ? (
+                        <p className="mt-1 text-sm leading-6 text-saffron-900/70">{level.summary}</p>
+                      ) : null}
+                    </Card>
+                  </Link>
                 </li>
               ))}
             </ol>
