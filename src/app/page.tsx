@@ -1,52 +1,16 @@
 import Link from "next/link";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/db";
 import { homeFor } from "@/lib/guards";
-import { ButtonLink, Card } from "@/components/ui";
-import { Icon, type IconName } from "@/components/icons";
+import { ButtonLink } from "@/components/ui";
+import { Icon } from "@/components/icons";
 import { LotusLogo, LotusFlower } from "@/components/lotus";
 import { KrishnaImage, PrabhupadaPortrait } from "@/components/devotional";
 
 // Public landing page — the front door of Sadhana Companion.
 // No auth required; signed-in users get a shortcut to their dashboard.
 
-const ladderTones = [
-  "bg-saffron-400",
-  "bg-saffron-500",
-  "bg-saffron-600",
-  "bg-saffron-700",
-  "bg-saffron-800",
-];
-
-const features: { icon: IconName; title: string; text: string }[] = [
-  {
-    icon: "sadhana",
-    title: "Sadhana journal",
-    text: "Japa rounds, quality of chanting, reading, aratis — a daily record of your practice with streaks and weekly stats.",
-  },
-  {
-    icon: "attendance",
-    title: "Weekly attendance",
-    text: "The Bhakti Vriksha weekly register, digital: attendance and siksha level for every satsanga.",
-  },
-  {
-    icon: "followups",
-    title: "Loving follow-ups",
-    text: "Every call, WhatsApp and home visit logged, so no devotee is ever forgotten.",
-  },
-  {
-    icon: "reports",
-    title: "Progress reports",
-    text: "Daily and weekly EFFORTS reports flow up the missionary tree, from group to temple.",
-  },
-];
-
 export default async function LandingPage() {
-  const [session, levels] = await Promise.all([
-    auth(),
-    prisma.sadhanaLevel.findMany({ orderBy: { order: "asc" } }),
-  ]);
-
+  const session = await auth();
   const dashboardHref = session?.user?.id ? homeFor(session.user.role) : null;
 
   return (
@@ -109,6 +73,11 @@ export default async function LandingPage() {
                     </ButtonLink>
                   </>
                 )}
+                <ButtonLink href="/levels" variant="ghost" className="px-4 py-3 text-base">
+                  <Icon.levels className="h-5 w-5" />
+                  Explore the path
+                  <Icon.chevron className="h-4 w-4" />
+                </ButtonLink>
               </div>
               <p className="mt-3 text-sm text-saffron-900/60">
                 Free to start · no approval needed · a counsellor can welcome you anytime.
@@ -133,63 +102,6 @@ export default async function LandingPage() {
               </div>
             </div>
           </div>
-        </section>
-
-        {/* The five-level ladder */}
-        <section className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div className="max-w-2xl">
-              <h2 className="text-2xl font-bold text-saffron-950 sm:text-3xl">The sadhana ladder</h2>
-              <p className="mt-2 text-saffron-900/70">
-                Five levels of steady spiritual progress, from first faith to full shelter. Tap a
-                level to read its standards and recommended practices.
-              </p>
-            </div>
-            {levels.length > 0 ? (
-              <ButtonLink href="/levels" variant="secondary">
-                Explore all levels
-                <Icon.chevron className="h-4 w-4" />
-              </ButtonLink>
-            ) : null}
-          </div>
-
-          {levels.length === 0 ? (
-            <Card className="mt-8 text-sm text-saffron-900/70">
-              The sadhana levels will appear here once the temple database is seeded.
-            </Card>
-          ) : (
-            <ol className="relative mt-10 space-y-8">
-              <span
-                aria-hidden
-                className="absolute bottom-5 left-5 top-5 w-px -translate-x-1/2 bg-saffron-300"
-              />
-              {levels.map((level, i) => (
-                <li key={level.id} className="relative flex items-start gap-4 sm:gap-6">
-                  <span
-                    className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white shadow-md ring-4 ring-cream ${
-                      ladderTones[i % ladderTones.length]
-                    }`}
-                  >
-                    {level.order}
-                  </span>
-                  <Link href={`/levels/${level.slug}`} className="group flex-1">
-                    <Card className="transition-shadow group-hover:shadow-md group-hover:ring-saffron-300">
-                      <div className="flex items-center justify-between gap-3">
-                        <h3 className="font-semibold text-saffron-950">{level.name}</h3>
-                        <span className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-saffron-700">
-                          Standards
-                          <Icon.chevron className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                        </span>
-                      </div>
-                      {level.summary ? (
-                        <p className="mt-1 text-sm leading-6 text-saffron-900/70">{level.summary}</p>
-                      ) : null}
-                    </Card>
-                  </Link>
-                </li>
-              ))}
-            </ol>
-          )}
         </section>
 
         {/* Srila Prabhupada — the founder-acharya */}
@@ -218,27 +130,6 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* What's inside */}
-        <section className="border-y border-saffron-900/10 bg-saffron-50/60">
-          <div className="mx-auto max-w-6xl px-4 py-14 sm:py-20">
-            <h2 className="text-2xl font-bold text-saffron-950 sm:text-3xl">Care for every devotee</h2>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {features.map((f) => {
-                const IconCmp = Icon[f.icon];
-                return (
-                  <Card key={f.title}>
-                    <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-saffron-100 text-saffron-700">
-                      <IconCmp className="h-6 w-6" />
-                    </span>
-                    <h3 className="mt-3 font-semibold text-saffron-950">{f.title}</h3>
-                    <p className="mt-1 text-sm leading-6 text-saffron-900/70">{f.text}</p>
-                  </Card>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
         {/* Final call to action */}
         <section className="mx-auto max-w-6xl px-4 py-14 text-center sm:py-20">
           <LotusLogo className="mx-auto h-20 w-20 drop-shadow-sm" />
@@ -249,7 +140,7 @@ export default async function LandingPage() {
             Create your account and start tracking your sadhana today — a counsellor will walk with
             you from the very first level.
           </p>
-          <div className="mt-6 flex justify-center gap-3">
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
             {dashboardHref ? (
               <ButtonLink href={dashboardHref} className="px-6 py-3 text-base">
                 Go to my dashboard
@@ -259,8 +150,8 @@ export default async function LandingPage() {
                 <ButtonLink href="/register" className="px-6 py-3 text-base">
                   Begin my sadhana
                 </ButtonLink>
-                <ButtonLink href="/login" variant="secondary" className="px-6 py-3 text-base">
-                  Sign in
+                <ButtonLink href="/levels" variant="secondary" className="px-6 py-3 text-base">
+                  Explore the path
                 </ButtonLink>
               </>
             )}
