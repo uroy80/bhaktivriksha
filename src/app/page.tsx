@@ -124,7 +124,7 @@ export default async function LandingPage() {
                   className="absolute left-1/2 top-1/4 -z-10 h-64 w-64 -translate-x-1/2 rounded-full bg-saffron-300/40 blur-3xl sm:h-80 sm:w-80"
                 />
                 {/* the hand-painted lotus flower as His pedestal — feet rest on the petals */}
-                <LotusFlower className="absolute bottom-0 left-1/2 z-0 w-[120%] -translate-x-1/2 translate-y-[12%] drop-shadow-md" />
+                <LotusFlower className="absolute bottom-0 left-1/2 z-0 w-[130%] -translate-x-1/2 translate-y-[58%] drop-shadow-md" />
                 {/* Krishna in front, standing on the petals */}
                 <KrishnaImage
                   priority
