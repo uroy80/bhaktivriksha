@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db";
 import { homeFor } from "@/lib/guards";
 import { ButtonLink, Card } from "@/components/ui";
 import { Icon, type IconName } from "@/components/icons";
-import { LotusLogo } from "@/components/lotus";
+import { LotusLogo, LotusHero } from "@/components/lotus";
 import { KrishnaImage, PrabhupadaPortrait } from "@/components/devotional";
 
 // Public landing page — the front door of Sadhana Companion.
@@ -115,13 +115,22 @@ export default async function LandingPage() {
               </p>
             </div>
 
-            {/* Lord Krishna — the object of all devotion */}
-            <div className="relative flex justify-center lg:justify-end">
-              <div
-                aria-hidden
-                className="absolute inset-0 -z-10 mx-auto my-auto h-72 w-72 rounded-full bg-saffron-300/40 blur-3xl sm:h-96 sm:w-96"
-              />
-              <KrishnaImage priority className="h-72 w-auto drop-shadow-xl sm:h-96 lg:h-[30rem]" />
+            {/* Lord Krishna standing at His lotus feet */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="relative inline-block">
+                {/* divine glow */}
+                <div
+                  aria-hidden
+                  className="absolute left-1/2 top-1/4 -z-10 h-64 w-64 -translate-x-1/2 rounded-full bg-saffron-300/40 blur-3xl sm:h-80 sm:w-80"
+                />
+                {/* the hand-painted lotus at His feet */}
+                <LotusHero className="absolute bottom-0 left-1/2 z-0 w-[115%] -translate-x-1/2 translate-y-[14%] drop-shadow-md" />
+                {/* Krishna in front */}
+                <KrishnaImage
+                  priority
+                  className="relative z-10 h-72 w-auto drop-shadow-xl sm:h-96 lg:h-[30rem]"
+                />
+              </div>
             </div>
           </div>
         </section>
