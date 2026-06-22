@@ -13,6 +13,9 @@ export const metadata: Metadata = {
     "The five sadhana levels of the Bhakti Vriksha program — standards, recommended practices and books for each step.",
 };
 
+// Reads the DB at request time — never prerender at build (no DB during build).
+export const dynamic = "force-dynamic";
+
 const ladderTones = [
   "bg-saffron-400",
   "bg-saffron-500",

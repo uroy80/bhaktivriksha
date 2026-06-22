@@ -10,6 +10,9 @@ import { PrabhupadaPortrait } from "@/components/devotional";
 import { parseSections } from "@/lib/levels";
 import { auth } from "@/auth";
 
+// Reads the DB at request time — never prerender at build (no DB during build).
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(props: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {

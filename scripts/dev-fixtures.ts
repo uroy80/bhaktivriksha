@@ -61,8 +61,8 @@ async function upsertUser(opts: {
 }
 
 async function main() {
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("Refusing to run fixtures in production.");
+  if (process.env.NODE_ENV === "production" && process.env.SEED_DEMO !== "1") {
+    throw new Error("Refusing to run fixtures in production without SEED_DEMO=1.");
   }
   const levelCount = await prisma.sadhanaLevel.count();
   if (levelCount === 0) throw new Error("Run `npm run db:seed` first (levels missing).");
