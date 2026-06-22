@@ -1,9 +1,9 @@
-import Link from "next/link";
 import type { Role, UserStatus } from "@prisma/client";
 import { requireRole } from "@/lib/guards";
 import { prisma } from "@/lib/db";
 import { Badge, Card, EmptyState, PageHeader } from "@/components/ui";
-import { Icon, type IconName } from "@/components/icons";
+import { Icon } from "@/components/icons";
+import { HierarchyTree, type HierarchyNode } from "./tree";
 
 type TreeUser = {
   id: string;
@@ -12,19 +12,6 @@ type TreeUser = {
   status: UserStatus;
   mentorId: string | null;
   sadhanaLevel: { name: string } | null;
-  _count: { mentees: number };
-};
-
-const roleTone: Record<Role, "red" | "blue" | "saffron"> = {
-  ADMIN: "red",
-  MISSIONARY: "blue",
-  DEVOTEE: "saffron",
-};
-
-const roleIcon: Record<Role, IconName> = {
-  ADMIN: "lotus",
-  MISSIONARY: "group",
-  DEVOTEE: "heart",
 };
 
 const roleRank: Record<Role, number> = { ADMIN: 0, MISSIONARY: 1, DEVOTEE: 2 };
@@ -40,7 +27,6 @@ export default async function HierarchyPage() {
       status: true,
       mentorId: true,
       sadhanaLevel: { select: { name: true } },
-      _count: { select: { mentees: true } },
     },
   });
 
@@ -55,18 +41,36 @@ export default async function HierarchyPage() {
     list.sort((a, b) => roleRank[a.role] - roleRank[b.role] || a.name.localeCompare(b.name));
   }
 
-  const admins = users
+  // Build serializable nested trees for the client component (seen-set guards cycles).
+  const seen = new Set<string>();
+  function build(u: TreeUser): HierarchyNode {
+    const children = seen.has(u.id) ? [] : (byMentor.get(u.id) ?? []);
+    seen.add(u.id);
+    return {
+      id: u.id,
+      name: u.name,
+      role: u.role,
+      status: u.status,
+      levelName: u.sadhanaLevel?.name ?? null,
+      children: children.map(build),
+    };
+  }
+
+  const adminTrees = users
     .filter((u) => u.role === "ADMIN")
-    .sort((a, b) => a.name.localeCompare(b.name));
-  const unassigned = users
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map(build);
+
+  const unassignedTrees = users
     .filter((u) => u.role !== "ADMIN" && !u.mentorId)
-    .sort((a, b) => roleRank[a.role] - roleRank[b.role] || a.name.localeCompare(b.name));
+    .sort((a, b) => roleRank[a.role] - roleRank[b.role] || a.name.localeCompare(b.name))
+    .map(build);
 
   return (
     <div>
       <PageHeader
         title="Milkyway Hierarchy"
-        subtitle="The full mentorship tree — every superior cares for everyone in their branch."
+        subtitle="The full mentorship tree — tap + to open a missionary's group, − to collapse it."
       />
 
       {users.length === 0 ? (
@@ -80,91 +84,27 @@ export default async function HierarchyPage() {
               </span>
               <h2 className="text-base font-semibold text-saffron-950">Temple tree</h2>
             </div>
-            <ul className="space-y-1">
-              {admins.map((a) => (
-                <TreeNode key={a.id} node={a} byMentor={byMentor} />
-              ))}
-            </ul>
+            <HierarchyTree roots={adminTrees} />
           </Card>
 
-          {unassigned.length > 0 && (
+          {unassignedTrees.length > 0 && (
             <Card className="ring-maroon-700/20">
               <div className="flex items-center gap-2">
                 <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-maroon-100 text-maroon-700">
                   <Icon.claim className="h-[18px] w-[18px]" />
                 </span>
                 <h2 className="text-base font-semibold text-maroon-800">Unassigned</h2>
-                <Badge tone="red">{unassigned.length}</Badge>
+                <Badge tone="red">{unassignedTrees.length}</Badge>
               </div>
               <p className="mt-1 mb-3 text-xs text-stone-500">
                 People without a mentor — they are outside the milkyway tree. Open a profile to
                 assign one.
               </p>
-              <ul className="space-y-1">
-                {unassigned.map((u) => (
-                  <TreeNode key={u.id} node={u} byMentor={byMentor} />
-                ))}
-              </ul>
+              <HierarchyTree roots={unassignedTrees} />
             </Card>
           )}
         </div>
       )}
     </div>
-  );
-}
-
-function TreeNode({ node, byMentor }: { node: TreeUser; byMentor: Map<string, TreeUser[]> }) {
-  const children = byMentor.get(node.id) ?? [];
-  const RoleIcon = Icon[roleIcon[node.role]];
-  const tile =
-    node.role === "ADMIN"
-      ? "bg-maroon-100 text-maroon-700"
-      : node.role === "MISSIONARY"
-        ? "bg-sky-100 text-sky-700"
-        : "bg-saffron-100 text-saffron-700";
-  return (
-    <li>
-      <Link
-        href={`/admin/devotees/${node.id}`}
-        className="flex flex-wrap items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-saffron-50"
-      >
-        <span
-          className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${tile} ${
-            node.status === "INACTIVE" ? "opacity-50" : ""
-          }`}
-        >
-          <RoleIcon className="h-3.5 w-3.5" />
-        </span>
-        <span
-          className={
-            node.status === "INACTIVE"
-              ? "text-sm font-medium text-stone-400 line-through"
-              : "text-sm font-medium text-saffron-950"
-          }
-        >
-          {node.name}
-        </span>
-        <Badge tone={roleTone[node.role]} className="text-[10px]">
-          {node.role}
-        </Badge>
-        {node.sadhanaLevel ? (
-          <span className="text-xs text-stone-500">{node.sadhanaLevel.name}</span>
-        ) : null}
-        {node.status === "PENDING" ? <Badge tone="gray">PENDING</Badge> : null}
-        {node._count.mentees > 0 ? (
-          <span className="inline-flex items-center gap-1 text-xs text-saffron-700">
-            <Icon.devotees className="h-3.5 w-3.5" />
-            {node._count.mentees} {node._count.mentees === 1 ? "mentee" : "mentees"}
-          </span>
-        ) : null}
-      </Link>
-      {children.length > 0 && (
-        <ul className="ml-5 space-y-1 border-l-2 border-saffron-200 pl-3">
-          {children.map((c) => (
-            <TreeNode key={c.id} node={c} byMentor={byMentor} />
-          ))}
-        </ul>
-      )}
-    </li>
   );
 }
