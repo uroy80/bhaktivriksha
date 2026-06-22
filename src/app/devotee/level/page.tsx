@@ -204,20 +204,6 @@ export default async function MyLevelPage() {
                     }),
                   )}
                 </div>
-                {level.sourceUrl ? (
-                  <p className="mt-4 text-xs text-saffron-900/60">
-                    Source:{" "}
-                    <a
-                      href={level.sourceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-0.5 font-medium text-saffron-700 underline hover:text-saffron-800"
-                    >
-                      bhaktisteps.com
-                      <Icon.chevron className="h-3.5 w-3.5 -rotate-45" />
-                    </a>
-                  </p>
-                ) : null}
               </Card>
             </section>
           ) : null}

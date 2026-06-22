@@ -111,17 +111,6 @@ export function LevelApplyForm({
               No standards are listed for this level.
             </p>
           )}
-          {selected.sourceUrl ? (
-            <a
-              href={selected.sourceUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-saffron-700 underline hover:text-saffron-800"
-            >
-              Read the full level guide on bhaktisteps.com
-              <Icon.chevron className="h-3.5 w-3.5 -rotate-45" />
-            </a>
-          ) : null}
         </div>
       ) : null}
 

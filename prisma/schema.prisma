@@ -102,7 +102,7 @@ model User {
   @@index([role, status])
 }
 
-// Sadhana levels (Sraddhavan, ... ) seeded from bhaktisteps.com.
+// Sadhana levels (Sraddhavan, ... ) of the Bhakti Vriksha program.
 // sections holds the page content: [{ title: "Standards", items: [...] }, { title: "Recommended", items: [...] }, ...]
 model SadhanaLevel {
   id        String  @id @default(cuid())

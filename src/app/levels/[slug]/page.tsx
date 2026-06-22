@@ -83,20 +83,6 @@ export default async function PublicLevelPage(props: { params: Promise<{ slug: s
           </p>
         </div>
 
-        {level.sourceUrl ? (
-          <p className="mt-6 text-xs text-stone-500">
-            Source:{" "}
-            <a
-              href={level.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-saffron-700 underline hover:text-saffron-800"
-            >
-              bhaktisteps.com
-            </a>
-          </p>
-        ) : null}
-
         {/* Prev / next */}
         <div className="mt-8 grid gap-3 sm:grid-cols-2">
           {prev ? (
